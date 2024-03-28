@@ -1,0 +1,104 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  font-size: 16px;
+}
+
+body {
+  min-width: 1280px;
+  color: #666666 !important;
+}
+
+#weather_scroll {
+  overflow-x: scroll;
+  padding-bottom: 2px;
+}
+
+#weather_scroll::-webkit-scrollbar {
+  width: 100%;
+  height: 6px;
+}
+
+#weather_scroll::-webkit-scrollbar-thumb {
+  background: linear-gradient(106.5deg, rgba(255, 215, 185, 0.91) 23%, rgba(223, 159, 247, 0.8) 93%);
+  border-radius: 10px; /* 스크롤바 둥근 테두리 */
+}
+
+#weather_scroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 1); /*스크롤바 뒷 배경 색상*/
+  border-radius: 10px;
+}
+
+/* 구글맵 스타일 정의 */
+.map-container {
+  width: 100%;
+  height: 100%;
+}
+
+table {
+  width: 100% !important;
+}
+.window_info,
+.window_info div,
+.window_info span,
+.window_info th,
+.window_info td {
+  font-size: 12px !important;
+}
+
+.select_color_all {
+  /* background-color: #f472b6; */
+  background-color: #f986bd;
+}
+.select_color_moon {
+  background-color: #7f388c;
+}
+.select_color_gong {
+  background-color: #000080;
+}
+.select_color_do {
+  background-color: #006400;
+}
+
+.gm-style-iw-d {
+  /* overflow: hidden !important; */
+}
+.gm-style .gm-style-iw-c {
+  /* padding: 0; */
+  /* position: relative; */
+  border-top: solid 8px #f986bd;
+  box-sizing: border-box;
+}
+.gm-style .gm-style-iw-c button {
+}
+
+.gm-style .gm-style-iw-c > button {
+  /* display: none;s */
+}
+/* ${type === '문화공간' ? '#7f388c' : type === '공원' ? '#000080' : '#006400'} */
+.gm-style-cc {
+  display: none;
+}
+#type_문화공간 {
+  background-color: #7f388c;
+}
+#type_공원 {
+  background-color: #000080;
+}
+#type_두드림길 {
+  background-color: #006400;
+}
+
+a[href^="http://maps.google.com/maps"]
+{
+  display: none !important;
+}
+a[href^="https://maps.google.com/maps"]
+{
+  display: none !important;
+}
