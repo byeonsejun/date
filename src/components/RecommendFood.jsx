@@ -58,10 +58,6 @@ export default function RecommendFood() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [myGeoInfo, location, allDistrictInfo, expansion]);
 
-  // useEffect(() => {
-  //   console.log(currentLocationFlag);
-  // }, [currentLocationFlag]);
-
   return (
     <div
       className={`

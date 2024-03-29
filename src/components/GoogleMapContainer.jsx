@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { GoogleMap, InfoWindow, MarkerF, useJsApiLoader } from '@react-google-maps/api';
 import useLocationStore from '@/stores/LocationStore';
-import { Jua } from 'next/font/google';
 import QRCode from 'qrcode.react';
 import Image from 'next/image';
 import SelectButton from './\bSelectButton';
@@ -11,6 +10,7 @@ import RecommendFood from './RecommendFood';
 import ReactStars from 'react-stars';
 import ModalPortal from './ui/ModalPortal';
 import TextInfoModal from './TextInfoModal';
+import { Jua } from 'next/font/google';
 
 let locationFlag = false;
 let centerFlag = false;
@@ -89,7 +89,6 @@ export default function GoogleMapContainer() {
   }, [location]);
 
   useEffect(() => {
-    console.log(findStorageItem('googleMapTextModal'));
     if (findStorageItem('googleMapTextModal')) setOpenModal(false);
   }, [openModal]);
 

@@ -52,7 +52,6 @@ export const getUserGeoInfo = async (
     async (position) => {
       getRealTimeLocation(position.coords);
       let result = {};
-
       await fetch('/api/location', {
         method: 'POST',
         body: JSON.stringify({ lat: position.coords.latitude, lon: position.coords.longitude }),
