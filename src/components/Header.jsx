@@ -1,5 +1,5 @@
-import { getCurrentTime } from '@/\butil/util';
 import Link from 'next/link';
+import AccessTime from './AccessTime';
 
 export default function Header() {
   return (
@@ -11,7 +11,7 @@ export default function Header() {
         <Link href={`/`}>오늘의 데이트</Link>
         <Link href={`/`}>이달의 데이트</Link>
       </nav> */}
-      <div>{getCurrentTime()}</div>
+      <AccessTime />
     </header>
   );
 }
