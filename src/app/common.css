@@ -102,3 +102,18 @@ a[href^="https://maps.google.com/maps"]
 {
   display: none !important;
 }
+
+.scroll_min::-webkit-scrollbar {
+  width: 8px;
+  height: 100%;
+}
+
+.scroll_min::-webkit-scrollbar-thumb {
+  background: linear-gradient(106.5deg, rgba(255, 215, 185, 0.91) 23%, rgba(223, 159, 247, 0.8) 93%);
+  border-radius: 8px;
+}
+
+.scroll_min::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 1);
+  border-radius: 8px;
+}

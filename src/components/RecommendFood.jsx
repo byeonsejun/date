@@ -61,8 +61,8 @@ export default function RecommendFood() {
   return (
     <div
       className={`
-      flex absolute bottom-2 left-2 border border-[#ededed] rounded-lg bg-white z-10 shadow-md transition-all duration-200 ease-out
-      ${expansion ? 'w-64 h-[50%] shadow-lg' : 'w-[50px] h-[50px] cursor-pointer'} 
+      flex absolute bottom-2 left-2 border border-[#ededed] rounded-lg z-10 shadow-md transition-all duration-200 ease-out 
+      ${expansion ? 'w-64 h-[50%] shadow-lg bg-white' : 'w-[50px] h-[50px] cursor-pointer bg-[#f986bd]'} 
     `}
     >
       {expansion ? (
@@ -129,7 +129,7 @@ export default function RecommendFood() {
       ) : (
         <div
           className={`
-          w-12 h-12 transition ease-in-out delay-150 hover:scale-110 hover:shadow-lg
+          w-12 h-12 transition ease-in-out delay-150 hover:scale-110 hover:shadow-lg text-white
           ${expansion && 'invisible'}
         `}
           onClick={() => setExpansion(true)}

@@ -59,7 +59,7 @@ export default function RecommendPlace() {
                   className="w-full h-20 flex border border-[#ededed] rounded-lg overflow-hidden"
                 >
                   <div id={`type_${item.type}`} className="w-2 min-w-2 h-full" />
-                  <div className="flex flex-col p-2 overflow-y-auto w-full">
+                  <div className="flex flex-col p-2 overflow-y-auto w-full scroll_min">
                     <p className="text-base flex justify-between">
                       <span>{item.title}</span>
                       <FaMapLocationDot
