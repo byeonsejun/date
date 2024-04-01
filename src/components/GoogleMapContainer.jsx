@@ -258,9 +258,9 @@ export default function GoogleMapContainer() {
                         )}
                         {address && <p className="text-xs">{address}</p>}
                         {inCharge && <p>{inCharge}</p>}
-                        {/* {desc && (
+                        {desc && (
                           <div dangerouslySetInnerHTML={{ __html: desc }} className="overflow-x-auto window_info" />
-                        )}  */}
+                        )}
 
                         {url && (
                           <p>
