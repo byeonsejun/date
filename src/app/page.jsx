@@ -1,7 +1,7 @@
 import MainSection from '@/components/MainSection';
 import { getAllLocationInfo } from '@/service/location';
 
-export const dynamic = 'force-dynamic';
+// export const dynamic = 'force-dynamic';
 
 export default async function HomePage() {
   const locationInfo = await getAllLocationInfo();
