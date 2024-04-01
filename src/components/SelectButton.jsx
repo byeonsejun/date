@@ -51,7 +51,7 @@ export default function SelectButton() {
         <li
           key={item.name}
           className={`${
-            selectedType === item.name ? `${item.class} text-white` : 'bg-white'
+            selectedType === item.name ? `${item.class} text-white` : 'bg-white hover:bg-slate-100'
           } p-2 rounded-lg cursor-pointer`}
           onClick={() => setSelectedType(item.name)}
         >

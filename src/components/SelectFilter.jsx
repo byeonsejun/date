@@ -8,11 +8,11 @@ export default function SelectFilter() {
 
   const handleSearch = (label) => (value) => {
     if (label === 'location' && value === '현재 위치' && findStorageItem('outside')) {
-      alert('서울이 아닌 지역에서는 현재 위치를 사용하실수 없습니다.');
+      alert('서울이 아닌 지역에서는 현재 위치를 사용하실 수 없습니다.');
       return;
     }
     if (label === 'location' && value === '현재 위치' && !findStorageItem('locationAgree')) {
-      alert('서울이 아닌 지역에서는 현재 위치를 사용하실 수 없습니다.');
+      alert('위치정보 제공을 차단하셨습니다. 허용하신 후 이용해 주세요.');
       return;
     }
     label === 'location' && setLocation(value);
