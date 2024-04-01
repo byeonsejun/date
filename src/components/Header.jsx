@@ -11,7 +11,7 @@ export default function Header() {
         <Link href={`/`}>오늘의 데이트</Link>
         <Link href={`/`}>이달의 데이트</Link>
       </nav> */}
-      {/* <AccessTime /> */}
+      <AccessTime />
     </header>
   );
 }

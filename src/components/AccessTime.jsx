@@ -1,8 +1,12 @@
 'use client';
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 export default function AccessTime() {
+  const [currentTime, setCurrentTime] = useState(null);
+  useEffect(() => {
+    getCurrentTime();
+  }, []);
   const getCurrentTime = useCallback((type) => {
     const today = new Date();
     const year = today.getFullYear();
@@ -31,7 +35,8 @@ export default function AccessTime() {
           break;
       }
     }
-    return timeString;
+    setCurrentTime(timeString);
   }, []);
-  return <div>{getCurrentTime()}</div>;
+
+  return <div>{currentTime && currentTime}</div>;
 }
