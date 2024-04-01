@@ -47,7 +47,7 @@ export default function useWeather() {
   useEffect(() => {
     if (allDistrictInfo.length === 0) return;
     // 위치 정보 요청
-    getUserGeoInfo(getRealTimeLocation, setMyGeoInfo, getSelectLocation, location, allDistrictInfo);
+    getUserGeoInfo(getRealTimeLocation, setMyGeoInfo, getSelectLocation, location);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allDistrictInfo]);
 

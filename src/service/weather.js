@@ -40,17 +40,11 @@ export const getForecastWeather = async (lat, lon) => {
   return getInfo;
 };
 
-export const getUserGeoInfo = async (
-  getRealTimeLocation,
-  setMyGeoInfo,
-  getSelectLocation,
-  location,
-  allDistrictInfo
-) => {
+export const getUserGeoInfo = async (getRealTimeLocation, setMyGeoInfo, getSelectLocation, location) => {
+  removeStorageItem('outside');
   const options = { enableHighAccuracy: true, maximumAge: 0 };
   navigator.geolocation.getCurrentPosition(
     async (position) => {
-      getRealTimeLocation(position.coords);
       let result = {};
       await fetch('/api/location', {
         method: 'POST',
@@ -58,6 +52,17 @@ export const getUserGeoInfo = async (
       })
         .then((res) => res.json())
         .then((data) => {
+          const areaFlag = data.plus_code.compound_code.split(' ')[2];
+          // const areaFlag = '경기도';
+          if (areaFlag !== '서울특별시') {
+            alert('서울이 아닌 지역에서는 현재 위치를 사용하실 수 없습니다.');
+            getSelectLocation(location);
+            removeStorageItem('locationAgree');
+            createStorageItem('outside', 'true');
+            return;
+          }
+
+          getRealTimeLocation(position.coords);
           const filteredAddresses = data.results.filter((address) => {
             const sublocalityLevel2 = address.address_components.find((component) =>
               component.types.includes('sublocality_level_2')
@@ -81,17 +86,17 @@ export const getUserGeoInfo = async (
               };
             }
           });
+          setMyGeoInfo(result);
+          createStorageItem('locationAgree', 'true');
         })
         .catch((err) => {
           alert('데이터요청에 실패하였습니다. 새로고침 버튼을 눌러주세요.');
           throw new Error(err);
         });
-      setMyGeoInfo(result);
-      createStorageItem('locationAgree', 'true');
     },
     (error) => {
       // 오류 코드: error.code 1 (권한 거부), 2 (위치 정보 사용 불가능), 3 (타임아웃)
-      getSelectLocation(location, allDistrictInfo);
+      getSelectLocation(location);
       removeStorageItem('locationAgree');
     },
     options
