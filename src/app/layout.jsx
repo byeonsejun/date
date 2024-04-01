@@ -7,8 +7,11 @@ import SWRConfigContext from '@/context/SWRConfigContext';
 const juaFont = Jua({ weight: '400', subsets: ['latin'], display: 'swap' });
 
 export const metadata = {
-  title: '서울, 너와 함께',
-  description: '서울에서 즐기는 데이트의 모든 것',
+  title: {
+    default: '서울, 너와 함께',
+    template: '서울에서 즐기는 데이트의 모든 것 | %s',
+  },
+  description: '서울에서 즐기는 데이트, 식사 그 모든 계획을 한 번에!',
 };
 
 export default function RootLayout({ children }) {

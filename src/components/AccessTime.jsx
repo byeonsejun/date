@@ -1,7 +1,7 @@
 'use client';
 
-import { getCurrentTime } from '@/\butil/util';
 import React, { useEffect, useState } from 'react';
+import { getCurrentTime } from '@/\butil/util';
 
 export default function AccessTime() {
   const [currentTime, setCurrentTime] = useState(null);
