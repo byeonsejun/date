@@ -1,5 +1,5 @@
 import { createStorageItem, removeStorageItem } from '@/\butil/util';
-import { fromUnixTime, differenceInDays } from 'date-fns';
+import { fromUnixTime } from 'date-fns';
 import format from 'date-fns/format';
 
 export const getRealTimeWeather = async (lat, lon) => {

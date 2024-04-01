@@ -62,7 +62,7 @@ export default function RecommendFood() {
     <div
       className={`
       flex absolute bottom-2 left-2 border border-[#ededed] rounded-lg z-10 shadow-md transition-all duration-200 ease-out 
-      ${expansion ? 'w-64 h-[50%] shadow-lg bg-white' : 'w-[50px] h-[50px] cursor-pointer bg-[#f986bd]'} 
+      ${expansion ? 'w-64 h-[50%] shadow-lg bg-white' : 'w-[50px] h-[50px] cursor-pointer bg-[#12c1ed]'} 
     `}
     >
       {expansion ? (
