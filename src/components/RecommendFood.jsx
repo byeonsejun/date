@@ -77,7 +77,7 @@ export default function RecommendFood() {
           <div className="border-t border-[#ededed] w-full h-full overflow-y-auto">
             {loading ? (
               <PuffLoader
-                color="#f986bd"
+                color="#12c1ed"
                 loading={loading}
                 size={50}
                 cssOverride={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }}

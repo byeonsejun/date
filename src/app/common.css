@@ -117,3 +117,7 @@ a[href^="https://maps.google.com/maps"]
   background: rgba(255, 255, 255, 1);
   border-radius: 8px;
 }
+
+.gm-style > div {
+  border: none !important;
+}
