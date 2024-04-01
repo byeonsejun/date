@@ -37,7 +37,7 @@ export default function RecommendPlace() {
             <li
               key={type}
               className={`border border-[#ededed] rounded-lg p-2 cursor-pointer ${
-                type === selectedType && 'bg-[#ff4d72] text-white '
+                type === selectedType && 'bg-[#f986bd] text-white '
               }`}
               onClick={() => setSelectedType(type)}
             >
