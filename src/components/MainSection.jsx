@@ -14,8 +14,8 @@ export default function MainSection({ locationInfo }) {
 
   return (
     <div className="w-full h-full flex items-center px-4">
-      <Aside />
-      <Map />
+      {/* <Aside />
+      <Map /> */}
     </div>
   );
 }
