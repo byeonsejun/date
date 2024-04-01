@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { GoogleMap, InfoWindow, MarkerF, useJsApiLoader } from '@react-google-maps/api';
 import useLocationStore from '@/stores/LocationStore';
