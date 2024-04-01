@@ -43,6 +43,7 @@ export default function SelectButton() {
     }
     const mylocation = location === '현재 위치' ? myGeoInfo.gu.long_name : location;
     getShowItem(mylocation, parkInfo, dodreamgilInfo, culturalSpaceInfo, selectedType);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [parkInfo, dodreamgilInfo, culturalSpaceInfo, myGeoInfo, location, selectedType]);
 
   return (
