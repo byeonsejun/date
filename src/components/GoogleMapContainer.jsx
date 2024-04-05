@@ -231,6 +231,8 @@ export default function GoogleMapContainer() {
                             className="object-cover"
                             loading="eager"
                             cachebuster={Date.now()}
+                            blurDataURL={img}
+                            placeholder="blur"
                           />
                           <h3 className="absolute bottom-2 left-2 text-xs font-bold text-white p-2 bg-black bg-opacity-50">
                             {title}
