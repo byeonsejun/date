@@ -69,7 +69,7 @@ export default function Weather() {
                     </div>
                   </div>
                   <div>
-                    <p className="text-white text-[80px] mt-3 leading-none text-li tracki tracking-[-0.25rem] flex">
+                    <p className="text-white text-[72px] mt-3 leading-none text-li tracki tracking-[-0.25rem] flex">
                       {todayWeather && getInteger(todayWeather.main.temp)}
                       <span className="text-5xl">°</span>
                     </p>
