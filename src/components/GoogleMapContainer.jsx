@@ -35,6 +35,7 @@ export default function GoogleMapContainer() {
   } = useLocationStore();
 
   const [openModal, setOpenModal] = useState(true);
+  const [showContentImg, setShowContentImg] = useState(null);
 
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
@@ -180,6 +181,7 @@ export default function GoogleMapContainer() {
               desc,
               url,
             } = data;
+
             return (
               <MarkerF
                 key={`${lat}-${idx}`}
@@ -223,16 +225,27 @@ export default function GoogleMapContainer() {
                     >
                       {img && (
                         <div className="w-[250px] h-[150px] min-h-[150px] relative">
+                          <PuffLoader
+                            color="#f986bd"
+                            loading={img !== showContentImg}
+                            size={50}
+                            cssOverride={{
+                              position: 'absolute',
+                              left: '50%',
+                              top: '50%',
+                              transform: 'translate(-50%, -50%)',
+                              zIndex: 10,
+                            }}
+                          />
                           <Image
                             src={img}
                             alt="info img"
                             sizes="250px"
                             fill
                             className="object-cover"
-                            loading="eager"
                             cachebuster={Date.now()}
-                            blurDataURL={img}
-                            placeholder="blur"
+                            onLoad={() => setShowContentImg(img)}
+                            onError={() => setShowContentImg(img)}
                           />
                           <h3 className="absolute bottom-2 left-2 text-xs font-bold text-white p-2 bg-black bg-opacity-50">
                             {title}
