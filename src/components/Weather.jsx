@@ -135,7 +135,6 @@ export default function Weather() {
                                   alt="weather icon"
                                   fill
                                   sizes="25px"
-                                  priority={idx > 8 ? true : false}
                                 />
                               </div>
                               <p className="text-white text-base tracking-tight font-thin flex items-center">

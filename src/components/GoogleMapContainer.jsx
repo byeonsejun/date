@@ -223,7 +223,15 @@ export default function GoogleMapContainer() {
                     >
                       {img && (
                         <div className="w-[250px] h-[150px] min-h-[150px] relative">
-                          <Image src={img} alt="info img" sizes="250px" fill className="object-cover" />
+                          <Image
+                            src={img}
+                            alt="info img"
+                            sizes="250px"
+                            fill
+                            className="object-cover"
+                            loading="eager"
+                            cachebuster={Date.now()}
+                          />
                           <h3 className="absolute bottom-2 left-2 text-xs font-bold text-white p-2 bg-black bg-opacity-50">
                             {title}
                           </h3>
