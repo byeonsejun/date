@@ -234,7 +234,7 @@ export default function GoogleMapContainer() {
                               left: '50%',
                               top: '50%',
                               transform: 'translate(-50%, -50%)',
-                              zIndex: 10,
+                              zIndex: 1,
                             }}
                           />
                           <Image
@@ -242,12 +242,12 @@ export default function GoogleMapContainer() {
                             alt="info img"
                             sizes="250px"
                             fill
-                            className="object-cover"
+                            className="object-cover z-[2]"
                             cachebuster={Date.now()}
                             onLoad={() => setShowContentImg(img)}
                             onError={() => setShowContentImg(img)}
                           />
-                          <h3 className="absolute bottom-2 left-2 text-xs font-bold text-white p-2 bg-black bg-opacity-50">
+                          <h3 className="absolute bottom-2 left-2 text-xs font-bold text-white p-2 bg-black bg-opacity-50 z-[3]">
                             {title}
                           </h3>
                         </div>
