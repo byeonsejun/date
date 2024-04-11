@@ -56,6 +56,14 @@ const useLocationStore = create((set) => ({
     }
   },
 
+  selectedType: '전체', // 현재 마커타입 상태
+  setSelectedType: (string) => set({ selectedType: string }),
+  onClickRecommendMaker: (lat, type) => {
+    // 추천 or 인기 안에있는 맵 마커 클릭시 전체타입으로 바뀔수있게
+    set({ selectedMarker: lat });
+    set({ selectedType: '전체' });
+  },
+
   recommendData: undefined, // 식당 추천데이터
   setRecommendData: (array) => set({ recommendData: array }),
   expansion: false, // 식당추천 bol

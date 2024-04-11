@@ -5,7 +5,7 @@ import { GoogleMap, InfoWindow, MarkerF, useJsApiLoader } from '@react-google-ma
 import useLocationStore from '@/stores/LocationStore';
 import QRCode from 'qrcode.react';
 import Image from 'next/image';
-import SelectButton from './\bSelectButton';
+import SelectShowMapType from './SelectShowMapType';
 import PuffLoader from 'react-spinners/PuffLoader';
 import { findStorageItem } from '@/\butil/util';
 import RecommendFood from './RecommendFood';
@@ -107,7 +107,7 @@ export default function GoogleMapContainer() {
   }
   return (
     <div className="w-full h-full relative">
-      <SelectButton />
+      <SelectShowMapType />
       <RecommendFood />
       <GoogleMap
         heading={0}

@@ -1,13 +1,14 @@
 import useLocationStore from '@/stores/LocationStore';
 import React, { useEffect, useState } from 'react';
-import { getFilterInfoData } from './\bSelectButton';
+import { getFilterInfoData } from './SelectShowMapType';
 import { FaMapLocationDot } from 'react-icons/fa6';
 import { findStorageItem } from '@/\butil/util';
 
 const selectType = ['추천', '인기'];
 
 export default function RecommendPlace() {
-  const { location, culturalSpaceInfo, dodreamgilInfo, parkInfo, myGeoInfo, setSelectedMarker } = useLocationStore();
+  const { location, culturalSpaceInfo, dodreamgilInfo, parkInfo, myGeoInfo, onClickRecommendMaker } =
+    useLocationStore();
   const [selectedType, setSelectedType] = useState('추천');
   const [showContent, setShowContent] = useState(undefined);
 
@@ -64,7 +65,7 @@ export default function RecommendPlace() {
                       <span>{item.title}</span>
                       <FaMapLocationDot
                         className="text-black cursor-pointer"
-                        onClick={() => setSelectedMarker(item.lat)}
+                        onClick={() => onClickRecommendMaker(item.lat, item.type)}
                       />
                     </p>
                     <p className="text-xs">

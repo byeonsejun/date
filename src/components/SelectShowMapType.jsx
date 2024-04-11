@@ -9,11 +9,18 @@ const selectType = [
   { name: '두드림길', class: 'select_color_do' },
 ];
 
-export default function SelectButton() {
-  const { location, myGeoInfo, parkInfo, dodreamgilInfo, culturalSpaceInfo, showPoint, setShowPoint } =
-    useLocationStore();
-
-  const [selectedType, setSelectedType] = useState('전체');
+export default function SelectShowMapType() {
+  const {
+    location,
+    myGeoInfo,
+    parkInfo,
+    dodreamgilInfo,
+    culturalSpaceInfo,
+    showPoint,
+    setShowPoint,
+    selectedType,
+    setSelectedType,
+  } = useLocationStore();
 
   const getShowItem = (myLc, park, dodr, cult, type) => {
     let currentInfo = [];
