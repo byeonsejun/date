@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-// import { devtools } from 'zustand/middleware';
 
 const LocationStore = (set) => ({
   location: '중구', // 내 현재 위치
@@ -80,6 +79,5 @@ const LocationStore = (set) => ({
   setUserInfo: (object) => set({ userInfo: object }),
 });
 const useLocationStore = create(LocationStore);
-// const useLocationStore = create(process.env.NODE_ENV !== 'production' ? devtools(LocationStore) : LocationStore);
 
 export default useLocationStore;
