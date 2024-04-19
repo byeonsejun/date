@@ -64,10 +64,11 @@ export default function RadarChart({
     setCurrentDetailData(
       dataFilterDetail(chartData, localTypeValue, genderTypeValue, ageTypeValue, randomArray, maxNum, genderData)
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chartData, localTypeValue, genderTypeValue, ageTypeValue, currentGeoLocation]);
 
   return (
-    <div className="px-2 py-3 flex flex-col items-center gap-4 h-[384px]">
+    <div className="px-2 py-3 flex flex-col items-center gap-4 w-[272px] h-[384px]">
       <h3 className="break-keep">{`${localTypeValue} / ${genderTypeValue} / ${ageTypeValue}대가 가장 많이 방문한 장소입니다.`}</h3>
       {currentShowType && <p>{`${currentShowLocal} (${wordConverter(currentShowType)})`}</p>}
       {currentDetailData && <Radar data={currentDetailData} className="w-12" options={options} />}

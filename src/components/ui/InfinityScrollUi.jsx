@@ -81,7 +81,7 @@ export default function InfinityScrollUi({ localTypeValue, genderData }) {
                   </li>
                 ))}
               {isLoading && <p>Loading...</p>}
-              <div id="observer" style={{ height: '10px' }} />
+              <div id="observer" style={{ minHeight: '10px' }} />
             </ul>
           </div>
         )}

@@ -5,6 +5,7 @@ import NavComponent from './NavComponent';
 
 export default async function Header() {
   const locationInfo = await getAllLocationInfo();
+
   return (
     <header className="w-full min-h-12 px-4 mb-4 font-bold flex justify-between items-center border-b border-[#ededed] text-[#f2f2f2] select_color_all">
       <Link href={`/`}>

@@ -19,7 +19,7 @@ export default function RootLayout({ children }) {
     <html lang="en" className={juaFont.className}>
       <body className="w-full h-full flex flex-col max-w-[2560px] m-auto">
         <Header />
-        <main className="grow">
+        <main className="grow overflow-hidden">
           <SWRConfigContext>{children}</SWRConfigContext>
         </main>
         <Footer />

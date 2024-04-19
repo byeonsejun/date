@@ -96,7 +96,7 @@ export default function BarChart({
   }, [localTypeValue]);
 
   return (
-    <div id="bar_container" className="h-full min-h-[748px] px-2 py-3">
+    <div id="bar_container" className="h-full min-h-[748px] py-3">
       <h3 className="text-center">{`${localTypeValue}의 성별, 나이대별 가장높은 방문율을 기록한 장소입니다.`}</h3>
       <div className="w-full h-full flex items-center">
         {currentAllData && <Bar options={options} data={currentAllData} width={1572} height={975} />}

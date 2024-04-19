@@ -65,21 +65,13 @@ table {
   background-color: #006400;
 }
 
-.gm-style-iw-d {
-  /* overflow: hidden !important; */
-}
 .gm-style .gm-style-iw-c {
   /* padding: 0; */
   /* position: relative; */
   border-top: solid 8px #f986bd;
   box-sizing: border-box;
 }
-.gm-style .gm-style-iw-c button {
-}
 
-.gm-style .gm-style-iw-c > button {
-  /* display: none;s */
-}
 /* ${type === '문화공간' ? '#7f388c' : type === '공원' ? '#000080' : '#006400'} */
 .gm-style-cc {
   display: none;
@@ -125,8 +117,12 @@ a[href^="https://maps.google.com/maps"]
 /* 바차트 반응형  */
 #bar_container {
   width: calc(100dvw - 320px);
+  /* width: calc(100dvw - 336px); */
+  /* width: calc(100dvw - 352px); */
   max-width: 2240px;
   min-width: 960px;
+  /* min-width: 944px; */
+  /* min-width: 928px; */
 }
 #bar_container > div > canvas {
   max-width: 2240px;
@@ -135,3 +131,7 @@ a[href^="https://maps.google.com/maps"]
 /* #bar_container > div > canvas {
   width: 100% !important;
 } */
+
+#visit_ul {
+  height: calc(100vh - 592px);
+}

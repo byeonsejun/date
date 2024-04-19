@@ -2,15 +2,27 @@
 
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import ModalPortal from './ui/ModalPortal';
 import SurveyModal from './ui/SurveyModal';
 import useLocationStore from '@/stores/LocationStore';
 
+const navMenu = [
+  { href: '/', name: '오늘의 데이트' },
+  { href: '/statistics', name: '이달의 통계' },
+];
+
 export default function NavComponent({ locationInfo }) {
   const { setLocationInfo, surveyStep, setSurveyStep } = useLocationStore();
-
+  const pathName = usePathname();
+  const [currentUrl, setCurrentUrl] = useState('');
   const [openModal, setOpenModal] = useState(false);
   const [closeNum, setCloseNum] = useState(5);
+
+  useEffect(() => {
+    setCurrentUrl(pathName);
+    console.log(pathName);
+  }, [pathName]);
 
   useEffect(() => {
     setLocationInfo(locationInfo);
@@ -34,8 +46,15 @@ export default function NavComponent({ locationInfo }) {
   return (
     <div>
       <nav className="flex gap-3">
-        <Link href={`/`}>오늘의 데이트</Link>
-        <Link href={`/statistics`}>이달의 통계</Link>
+        {navMenu.map((item) => (
+          <Link
+            key={`${item.name}-nav`}
+            href={item.href}
+            className={currentUrl !== item.href ? 'opacity-50 hover:opacity-100' : ''}
+          >
+            {item.name}
+          </Link>
+        ))}
       </nav>
       {/* {openModal && (
         <ModalPortal>

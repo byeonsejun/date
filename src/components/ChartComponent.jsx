@@ -25,8 +25,8 @@ export default function ChartComponent({ chartData, localInfoData }) {
   };
 
   return (
-    <section className="w-full h-full flex flex-col px-4">
-      <div className="flex h-10 items-center">
+    <section className="w-full h-full flex flex-col">
+      <div className="flex h-10 items-center pl-4">
         <div className="flex gap-2">
           <div>
             <BaseSelect onChange={handleFilter('location')} selected={localTypeValue}>
@@ -64,7 +64,7 @@ export default function ChartComponent({ chartData, localInfoData }) {
         </div>
       </div>
       <div className="flex grow gap-2">
-        <div className="px-2 py-3 flex flex-col">
+        <div className="px-4 py-3 flex flex-col">
           <RadarChart
             ageType={ageType}
             chartData={chartData}
