@@ -1,6 +1,7 @@
 import { create } from 'zustand';
+import { devtools } from 'zustand/middleware';
 
-const useLocationStore = create((set) => ({
+const LocationStore = (set) => ({
   location: '중구', // 내 현재 위치
   setLocation: (string) => set({ location: string }),
 
@@ -10,11 +11,12 @@ const useLocationStore = create((set) => ({
   parkInfo: [], // 구별 공원 정보
   setLocationInfo: (allLocationInfo) =>
     set(() => ({
-      allDistrictInfo: allLocationInfo.local,
+      allDistrictInfo: allLocationInfo.localInfoData,
       culturalSpaceInfo: allLocationInfo.culturalSpaceInfo,
       dodreamgilInfo: allLocationInfo.dodreamgilInfo,
       parkInfo: allLocationInfo.parkInfo,
     })),
+  setAllDistrictInfo: (object) => set({ allDistrictInfo: object }),
 
   myGeoInfo: undefined,
   setMyGeoInfo: (object) => set({ myGeoInfo: object }),
@@ -68,6 +70,16 @@ const useLocationStore = create((set) => ({
   setRecommendData: (array) => set({ recommendData: array }),
   expansion: false, // 식당추천 bol
   setExpansion: (boolean) => set({ expansion: boolean }),
-}));
+
+  surveyStep: 1, // 질문 진행숫자
+  setSurveyStep: (number) => set({ surveyStep: number }),
+  userInfo: {
+    userGender: '',
+    userAge: 0,
+  },
+  setUserInfo: (object) => set({ userInfo: object }),
+});
+
+const useLocationStore = create(process.env.NODE_ENV !== 'production' ? devtools(LocationStore) : LocationStore);
 
 export default useLocationStore;

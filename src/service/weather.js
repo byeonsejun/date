@@ -2,6 +2,7 @@ import { createStorageItem, removeStorageItem } from '@/\butil/util';
 import { fromUnixTime } from 'date-fns';
 import format from 'date-fns/format';
 
+// 오늘의 날씨정보 받아오기
 export const getRealTimeWeather = async (lat, lon) => {
   const pro = 'https';
   const type = 'weather';
@@ -12,6 +13,7 @@ export const getRealTimeWeather = async (lat, lon) => {
   return todayWeather;
 };
 
+// 미래의 날씨정보 받아오기
 export const getForecastWeather = async (lat, lon) => {
   const pro = 'http';
   const type = 'forecast';

@@ -1,5 +1,5 @@
 import { createStorageItem } from '@/\butil/util';
-import CloseIcon from './ui/CloseIcon';
+import CloseIcon from './CloseIcon';
 
 export default function TextInfoModal({ onClose }) {
   const alwayClose = () => {

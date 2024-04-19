@@ -18,10 +18,10 @@ export async function getAllLocationInfo() {
   const dodreamgilInfo = dodreamgilJson;
   const culturalSpaceInfo = culturalSpaceJson;
 
-  return { local, parkInfo, dodreamgilInfo, culturalSpaceInfo };
+  return { localInfoData, parkInfo, dodreamgilInfo, culturalSpaceInfo };
 }
 
-export const local = [
+export const localInfoData = [
   { location: '현재 위치', lat: 0, lon: 0 },
   { location: '중구', lat: 37.560825, lon: 126.995069 },
   { location: '강동구', lat: 37.550771, lon: 127.143998 },

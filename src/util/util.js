@@ -85,3 +85,11 @@ export function getRandomIndexItem(array) {
   const randomIndex = Math.floor(Math.random() * array.length);
   return array[randomIndex];
 }
+
+export function makeRandomNumberIn(number) {
+  return Math.floor(Math.random() * number);
+}
+
+export function getRandomNumber(min, max) {
+  return Math.floor(min + (max - min) * Math.random());
+}

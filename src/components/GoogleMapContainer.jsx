@@ -11,7 +11,7 @@ import { findStorageItem } from '@/\butil/util';
 import RecommendFood from './RecommendFood';
 import ReactStars from 'react-stars';
 import ModalPortal from './ui/ModalPortal';
-import TextInfoModal from './TextInfoModal';
+import TextInfoModal from './ui/TextInfoModal';
 import { Jua } from 'next/font/google';
 
 let locationFlag = false;
@@ -44,9 +44,9 @@ export default function GoogleMapContainer() {
     language: 'ko',
   });
 
-  const onLoad = useCallback((map) => {
-    mapRef.current = map;
-  }, []);
+  // const onLoad = useCallback((map) => {
+  //   mapRef.current = map;
+  // }, []);
 
   const handleCenterPosition = useCallback(
     (lo) => {
@@ -75,10 +75,22 @@ export default function GoogleMapContainer() {
   const getCenterPosition = () => {
     if (findStorageItem('locationAgree') && !myGeoInfo) return;
     if (mapRef.current) {
-      if (centerFlag) return;
+      if (centerFlag) return; // 웹 생에 1번만 처리
       centerFlag = true;
+      return myGeoInfo ? myGeoInfo.point : findLocation();
     }
-    return myGeoInfo ? myGeoInfo.point : { lat: 37.566295, lng: 126.978418 };
+    if (location === '현재 위치') {
+      return myGeoInfo.point;
+    } else {
+      return findLocation();
+    }
+  };
+
+  const findLocation = () => {
+    const [filterGeo] = allDistrictInfo.filter((data) => data.location === location);
+    const lat = filterGeo.lat;
+    const lng = filterGeo.lon;
+    return { lat, lng };
   };
 
   useEffect(() => {
@@ -131,7 +143,7 @@ export default function GoogleMapContainer() {
             },
           },
         }}
-        onLoad={(map) => onLoad(map)}
+        onLoad={(map) => (mapRef.current = map)}
       >
         {openModal && (
           <ModalPortal>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getForecastWeather, getRealTimeWeather, getUserGeoInfo } from '@/service/weather';
 import useLocationStore from '@/stores/LocationStore';
 
@@ -11,6 +11,7 @@ export default function useWeather() {
     setMyLocalWeather,
     showWeather,
     setShowWeather,
+    myGeoInfo,
     setMyGeoInfo,
   } = useLocationStore();
 
@@ -47,6 +48,7 @@ export default function useWeather() {
   useEffect(() => {
     if (allDistrictInfo.length === 0) return;
     // 위치 정보 요청
+    if (myGeoInfo) return; // 이미 내 위치정보 받은상태라면 리턴
     getUserGeoInfo(getRealTimeLocation, setMyGeoInfo, getSelectLocation, location);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allDistrictInfo]);

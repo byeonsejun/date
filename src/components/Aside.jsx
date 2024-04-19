@@ -4,7 +4,7 @@ import Weather from './Weather';
 
 export default function Aside() {
   return (
-    <aside className="w-[287px] min-w-[288px] max-w-[287px] h-full px-2 py-3 flex flex-col border border-[#ededed] mr-4 ">
+    <aside className="w-[288px] min-w-[288px] max-w-[288px] h-full px-2 py-3 flex flex-col border border-[#ededed] mr-4 ">
       <SelectFilter />
       <p className="mb-2 text-base">선택하신 지역의 날씨 정보입니다.</p>
       <Weather />

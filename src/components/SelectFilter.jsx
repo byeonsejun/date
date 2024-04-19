@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import BaseSelect from './ui/BaseSelect';
 import { findStorageItem } from '@/\butil/util';

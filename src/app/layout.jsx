@@ -17,13 +17,14 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={juaFont.className}>
-      <body className="w-full h-full flex flex-col">
+      <body className="w-full h-full flex flex-col max-w-[2560px] m-auto">
         <Header />
         <main className="grow">
           <SWRConfigContext>{children}</SWRConfigContext>
         </main>
         <Footer />
         <div id="portal" />
+        {/* <div id="pre_loader" /> */}
       </body>
     </html>
   );

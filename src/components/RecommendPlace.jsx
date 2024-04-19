@@ -1,3 +1,5 @@
+'use client';
+
 import useLocationStore from '@/stores/LocationStore';
 import React, { useEffect, useState } from 'react';
 import { getFilterInfoData } from './SelectShowMapType';

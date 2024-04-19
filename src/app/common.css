@@ -121,3 +121,17 @@ a[href^="https://maps.google.com/maps"]
 .gm-style > div {
   border: none !important;
 }
+
+/* 바차트 반응형  */
+#bar_container {
+  width: calc(100dvw - 320px);
+  max-width: 2240px;
+  min-width: 960px;
+}
+#bar_container > div > canvas {
+  max-width: 2240px;
+  max-height: 738px;
+}
+/* #bar_container > div > canvas {
+  width: 100% !important;
+} */
