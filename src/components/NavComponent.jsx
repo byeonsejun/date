@@ -21,7 +21,6 @@ export default function NavComponent({ locationInfo }) {
 
   useEffect(() => {
     setCurrentUrl(pathName);
-    console.log(pathName);
   }, [pathName]);
 
   useEffect(() => {
