@@ -18,7 +18,7 @@ let locationFlag = false;
 let centerFlag = false;
 const lib = ['places'];
 const juaFont = Jua({ weight: '400', subsets: ['latin'], display: 'swap' });
-export default function GoogleMapContainer() {
+export default function GoogleMapContainer({ setShowLoader }) {
   const mapRef = useRef(null);
   // 230 223 216 건물색 // 191 198 217 도로색 , 172 188 195 도로테두리색 // 244 241 239 F4F1EF 도시바닥,
   const {
@@ -33,7 +33,6 @@ export default function GoogleMapContainer() {
     expansion,
     handleMarker,
   } = useLocationStore();
-
   const [openModal, setOpenModal] = useState(true);
   const [showContentImg, setShowContentImg] = useState(null);
 
@@ -43,10 +42,6 @@ export default function GoogleMapContainer() {
     version: '3.55',
     language: 'ko',
   });
-
-  // const onLoad = useCallback((map) => {
-  //   mapRef.current = map;
-  // }, []);
 
   const handleCenterPosition = useCallback(
     (lo) => {
@@ -92,6 +87,11 @@ export default function GoogleMapContainer() {
     const lng = filterGeo.lon;
     return { lat, lng };
   };
+
+  useEffect(() => {
+    if (!centerFlag) return;
+    setShowLoader(false);
+  }, [centerFlag]);
 
   useEffect(() => {
     if (findStorageItem('locationAgree') && !myGeoInfo) return;

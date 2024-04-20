@@ -24,7 +24,6 @@ export default function RootLayout({ children }) {
         </main>
         <Footer />
         <div id="portal" />
-        {/* <div id="pre_loader" /> */}
       </body>
     </html>
   );

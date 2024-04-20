@@ -42,6 +42,7 @@ export default function NavComponent({ locationInfo }) {
   //   }
   //   return () => clearInterval(closeNumInterval);
   // }, [surveyStep, closeNum]);
+
   return (
     <div>
       <nav className="flex gap-3">
