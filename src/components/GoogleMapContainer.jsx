@@ -67,10 +67,17 @@ export default function GoogleMapContainer({ setShowLoader }) {
     [allDistrictInfo, myGeoInfo]
   );
 
+  const hideLoaderFn = () => {
+    setTimeout(() => {
+      setShowLoader(false);
+    }, 100);
+  };
+
   const getCenterPosition = () => {
     if (findStorageItem('locationAgree') && !myGeoInfo) return;
     if (mapRef.current) {
       if (centerFlag) return; // 웹 생에 1번만 처리
+      hideLoaderFn();
       centerFlag = true;
       return myGeoInfo ? myGeoInfo.point : findLocation();
     }
@@ -87,11 +94,6 @@ export default function GoogleMapContainer({ setShowLoader }) {
     const lng = filterGeo.lon;
     return { lat, lng };
   };
-
-  useEffect(() => {
-    if (!centerFlag) return;
-    setShowLoader(false);
-  }, [centerFlag]);
 
   useEffect(() => {
     if (findStorageItem('locationAgree') && !myGeoInfo) return;
