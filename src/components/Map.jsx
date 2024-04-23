@@ -1,13 +1,14 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import GoogleMapContainer from './GoogleMapContainer';
+import useLocationStore from '@/stores/LocationStore';
 
 export default function Map() {
-  const [showLoader, setShowLoader] = useState(true);
+  const { showPreLoader } = useLocationStore();
   return (
     <div className="grow w-full h-full border border-[#ededed]" id="map">
-      {showLoader && (
+      {showPreLoader && (
         <div className="pre_loader_background">
           <div id="pre_loader">
             <div className="box">
@@ -16,7 +17,7 @@ export default function Map() {
           </div>
         </div>
       )}
-      <GoogleMapContainer setShowLoader={setShowLoader} />
+      <GoogleMapContainer />
     </div>
   );
 }

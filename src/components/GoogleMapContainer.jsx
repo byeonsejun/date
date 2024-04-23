@@ -18,7 +18,7 @@ let locationFlag = false;
 let centerFlag = false;
 const lib = ['places'];
 const juaFont = Jua({ weight: '400', subsets: ['latin'], display: 'swap' });
-export default function GoogleMapContainer({ setShowLoader }) {
+export default function GoogleMapContainer() {
   const mapRef = useRef(null);
   // 230 223 216 건물색 // 191 198 217 도로색 , 172 188 195 도로테두리색 // 244 241 239 F4F1EF 도시바닥,
   const {
@@ -32,6 +32,7 @@ export default function GoogleMapContainer({ setShowLoader }) {
     recommendData,
     expansion,
     handleMarker,
+    setShowPreLoader,
   } = useLocationStore();
   const [openModal, setOpenModal] = useState(true);
   const [showContentImg, setShowContentImg] = useState(null);
@@ -69,7 +70,7 @@ export default function GoogleMapContainer({ setShowLoader }) {
 
   const hideLoaderFn = () => {
     setTimeout(() => {
-      setShowLoader(false);
+      setShowPreLoader(false);
     }, 100);
   };
 
