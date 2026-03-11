@@ -292,11 +292,8 @@ export default function GoogleMapContainer() {
       },
     },
   };
-  const mapId =
-    typeof process.env.NEXT_PUBLIC_GOOGLE_MAPS_ID === 'string' && process.env.NEXT_PUBLIC_GOOGLE_MAPS_ID.length > 0
-      ? process.env.NEXT_PUBLIC_GOOGLE_MAPS_ID
-      : undefined;
-  if (mapId) mapOptions.mapId = mapId;
+  // Raster map 사용 (Vector map 미사용으로 불필요한 로드 및 에러 방지)
+  // mapId 미설정 시 기본 래스터 타일 사용
 
   if (!isLoaded) {
     return (

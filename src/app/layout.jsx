@@ -1,9 +1,18 @@
+import { Jua } from 'next/font/google';
 import './common.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import SWRConfigContext from '@/context/SWRConfigContext';
 import LocationConsentModal from '@/components/LocationConsentModal';
 import SeoulOnlyToast from '@/components/SeoulOnlyToast';
+
+const juaFont = Jua({
+  weight: '400',
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-jua',
+  preload: false, // 한글 포함 전체 폰트 로드 (subset만 쓰면 한글 미표시 가능)
+});
 
 export const metadata = {
   title: {
@@ -15,7 +24,10 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="ko">
+    <html lang="ko" className={`${juaFont.variable} ${juaFont.className}`}>
+      <head>
+        <link rel="preconnect" href="https://mapsresources-pa.googleapis.com" />
+      </head>
       <body className="w-full h-full flex flex-col max-w-[2560px] m-auto">
         <Header />
         <main className="grow overflow-hidden">

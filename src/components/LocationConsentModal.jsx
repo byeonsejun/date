@@ -49,7 +49,7 @@ export default function LocationConsentModal() {
             <button
               type="button"
               onClick={handleAgree}
-              className="flex-1 py-2.5 px-4 rounded bg-[#f986bd] text-white hover:opacity-90 font-normal"
+              className="flex-1 py-2.5 px-4 rounded bg-[#f986bd] text-black hover:opacity-90 font-normal"
             >
               동의
             </button>

@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -9,7 +7,7 @@ body {
   width: 100%;
   height: 100%;
   font-size: 16px;
-  font-family: 'Jua', sans-serif !important;
+  font-family: var(--font-jua), 'Jua', sans-serif !important;
 }
 
 body {
@@ -55,8 +53,9 @@ table {
 }
 
 .select_color_all {
-  /* background-color: #f472b6; */
+  /* WCAG 명도 대비: 분홍 배경 + 검은 글씨 */
   background-color: #f986bd;
+  color: #000000;
 }
 .select_color_moon {
   background-color: #7f388c;
