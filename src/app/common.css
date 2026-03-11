@@ -2,6 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 지도 스켈레톤: 부드러운 펄스 */
+@keyframes map-skeleton-pulse {
+  0%,
+  100% {
+    opacity: 0.92;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+.animate-map-pulse {
+  animation: map-skeleton-pulse 2s ease-in-out infinite;
+}
+
 html,
 body {
   width: 100%;

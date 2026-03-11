@@ -1,7 +1,13 @@
 'use client';
 
 import React from 'react';
-import GoogleMapContainer from './GoogleMapContainer';
+import dynamic from 'next/dynamic';
+import MapSkeleton from './MapSkeleton';
+
+const GoogleMapContainer = dynamic(() => import('./GoogleMapContainer'), {
+  ssr: false,
+  loading: () => <MapSkeleton />,
+});
 
 export default function Map() {
   return (

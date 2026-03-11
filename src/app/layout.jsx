@@ -25,9 +25,6 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="ko" className={`${juaFont.variable} ${juaFont.className}`}>
-      <head>
-        <link rel="preconnect" href="https://mapsresources-pa.googleapis.com" />
-      </head>
       <body className="w-full h-full flex flex-col max-w-[2560px] m-auto">
         <Header />
         <main className="grow overflow-hidden">
