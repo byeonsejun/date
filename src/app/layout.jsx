@@ -11,7 +11,6 @@ const juaFont = Jua({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-jua',
-  preload: false, // 한글 포함 전체 폰트 로드 (subset만 쓰면 한글 미표시 가능)
 });
 
 export const metadata = {
