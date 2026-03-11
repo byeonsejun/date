@@ -1,9 +1,6 @@
 import { create } from 'zustand';
 
 const LocationStore = (set) => ({
-  showPreLoader: true, // 구글맵 렌더전 보여줄 프리로더
-  setShowPreLoader: (boolean) => set({ showPreLoader: boolean }),
-
   location: '중구', // 내 현재 위치
   setLocation: (string) => set({ location: string }),
 
@@ -80,6 +77,10 @@ const LocationStore = (set) => ({
     userAge: 0,
   },
   setUserInfo: (object) => set({ userInfo: object }),
+
+  seoulOnlyToastVisible: false,
+  setSeoulOnlyToastVisible: (v) => set({ seoulOnlyToastVisible: v }),
+  showSeoulOnlyToast: () => set({ seoulOnlyToastVisible: true }),
 });
 const useLocationStore = create(LocationStore);
 

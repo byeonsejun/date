@@ -42,7 +42,15 @@ export const getForecastWeather = async (lat, lon) => {
   return getInfo;
 };
 
-export const getUserGeoInfo = async (getRealTimeLocation, setMyGeoInfo, getSelectLocation, location) => {
+const DEFAULT_DISTRICT = '중구';
+
+export const getUserGeoInfo = async (
+  getRealTimeLocation,
+  setMyGeoInfo,
+  getSelectLocation,
+  setLocation,
+  onSeoulOnlyNotice
+) => {
   removeStorageItem('outside');
   const options = { enableHighAccuracy: true, maximumAge: 0 };
   navigator.geolocation.getCurrentPosition(
@@ -57,8 +65,9 @@ export const getUserGeoInfo = async (getRealTimeLocation, setMyGeoInfo, getSelec
           const areaFlag = data.plus_code.compound_code.split(' ')[2];
           // const areaFlag = '경기도';
           if (areaFlag !== '서울특별시') {
-            alert('서울이 아닌 지역에서는 현재 위치를 사용하실 수 없습니다.');
-            getSelectLocation(location);
+            onSeoulOnlyNotice?.();
+            setLocation(DEFAULT_DISTRICT);
+            getSelectLocation(DEFAULT_DISTRICT);
             removeStorageItem('locationAgree');
             createStorageItem('outside', 'true');
             return;
@@ -98,7 +107,8 @@ export const getUserGeoInfo = async (getRealTimeLocation, setMyGeoInfo, getSelec
     },
     (error) => {
       // 오류 코드: error.code 1 (권한 거부), 2 (위치 정보 사용 불가능), 3 (타임아웃)
-      getSelectLocation(location);
+      setLocation(DEFAULT_DISTRICT);
+      getSelectLocation(DEFAULT_DISTRICT);
       removeStorageItem('locationAgree');
     },
     options

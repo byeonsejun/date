@@ -46,6 +46,7 @@ export default function RecommendFood() {
 
   useEffect(() => {
     if (findStorageItem('locationAgree') && !myGeoInfo) return;
+    if (location === '현재 위치' && !myGeoInfo) return;
     if (!myGeoInfo && allDistrictInfo.length === 0) return;
     if (findStorageItem('locationAgree') && !recommendFlag) {
       recommendFlag = true;

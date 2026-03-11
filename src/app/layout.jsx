@@ -1,10 +1,9 @@
-import { Jua } from 'next/font/google';
 import './common.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import SWRConfigContext from '@/context/SWRConfigContext';
-
-const juaFont = Jua({ weight: '400', subsets: ['latin'], display: 'swap' });
+import LocationConsentModal from '@/components/LocationConsentModal';
+import SeoulOnlyToast from '@/components/SeoulOnlyToast';
 
 export const metadata = {
   title: {
@@ -16,7 +15,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={juaFont.className}>
+    <html lang="ko">
       <body className="w-full h-full flex flex-col max-w-[2560px] m-auto">
         <Header />
         <main className="grow overflow-hidden">
@@ -24,6 +23,8 @@ export default function RootLayout({ children }) {
         </main>
         <Footer />
         <div id="portal" />
+        <LocationConsentModal />
+        <SeoulOnlyToast />
       </body>
     </html>
   );

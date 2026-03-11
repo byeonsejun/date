@@ -31,10 +31,16 @@ export default function Weather() {
   const forecastWeather = showWeather.forecast;
 
   return (
-    <div
-      className={`border border-[#ededed] rounded-lg w-full h-[280px] mb-4 bg-[url(/assets/image/wbg.jpg)] bg-cover p-1 relative`}
-    >
-      <div className="w-full h-full bg-neutral-900/20 backdrop-blur-sm rounded-lg py-2 px-3 cursor-default">
+    <div className="border border-[#ededed] rounded-lg w-full h-[280px] mb-4 p-1 relative overflow-hidden">
+      <Image
+        src="/assets/image/wbg.jpg"
+        alt=""
+        fill
+        sizes="288px"
+        className="object-cover -z-10"
+        priority
+      />
+      <div className="w-full h-full bg-neutral-900/20 backdrop-blur-sm rounded-lg py-2 px-3 cursor-default relative z-0">
         {loading ? (
           <PuffLoader
             color="#f3eaf2"

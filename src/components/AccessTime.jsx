@@ -1,18 +1,37 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { getCurrentTime } from '@/\butil/util';
 
 export default function AccessTime() {
   const [currentTime, setCurrentTime] = useState(null);
+  const timeoutIdRef = useRef(null);
 
   useEffect(() => {
-    setCurrentTime(getCurrentTime());
-    const intervalId = setInterval(() => {
+    const updateDisplay = () => {
       setCurrentTime(getCurrentTime());
-    }, 30000); // 30초마다 현재 시간 업데이트
+    };
 
-    return () => clearInterval(intervalId); // 컴포넌트 언마운트 시 setInterval 제거
+    const scheduleNextMinute = () => {
+      const now = new Date();
+      const seconds = now.getSeconds();
+      const ms = now.getMilliseconds();
+      const msUntilNextMinute = (60 - seconds) * 1000 - ms;
+      timeoutIdRef.current = setTimeout(() => {
+        updateDisplay();
+        timeoutIdRef.current = setInterval(updateDisplay, 60000);
+      }, msUntilNextMinute);
+    };
+
+    updateDisplay();
+    scheduleNextMinute();
+
+    return () => {
+      if (timeoutIdRef.current != null) {
+        clearTimeout(timeoutIdRef.current);
+        clearInterval(timeoutIdRef.current);
+      }
+    };
   }, []);
 
   return <div>{currentTime && currentTime}</div>;

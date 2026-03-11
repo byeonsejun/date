@@ -45,15 +45,19 @@ export default function NavComponent({ locationInfo }) {
 
   return (
     <div>
-      <nav className="flex gap-3">
-        {navMenu.map((item) => (
-          <Link
-            key={`${item.name}-nav`}
-            href={item.href}
-            className={currentUrl !== item.href ? 'opacity-50 hover:opacity-100' : ''}
-          >
-            {item.name}
-          </Link>
+      <nav className="flex items-center gap-2">
+        {navMenu.map((item, index) => (
+          <React.Fragment key={`${item.name}-nav`}>
+            <Link
+              href={item.href}
+              className={currentUrl !== item.href ? 'opacity-50 hover:opacity-100' : ''}
+            >
+              {item.name}
+            </Link>
+            {index < navMenu.length - 1 && (
+              <span className="opacity-60 select-none" aria-hidden="true">/</span>
+            )}
+          </React.Fragment>
         ))}
       </nav>
       {/* {openModal && (

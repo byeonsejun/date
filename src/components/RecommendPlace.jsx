@@ -28,6 +28,7 @@ export default function RecommendPlace() {
       (findStorageItem('locationAgree') && !myGeoInfo)
     )
       return;
+    if (location === '현재 위치' && !myGeoInfo?.gu) return;
     const mylocation = location === '현재 위치' ? myGeoInfo.gu.long_name : location;
     randomPick(mylocation, culturalSpaceInfo, dodreamgilInfo, parkInfo);
   }, [location, culturalSpaceInfo, dodreamgilInfo, parkInfo, myGeoInfo, selectedType]);

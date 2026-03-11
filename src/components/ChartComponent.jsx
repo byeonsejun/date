@@ -29,7 +29,12 @@ export default function ChartComponent({ chartData, localInfoData }) {
       <div className="flex h-10 items-center pl-4">
         <div className="flex gap-2">
           <div>
-            <BaseSelect onChange={handleFilter('location')} selected={localTypeValue}>
+            <BaseSelect
+              id="chart-location-select"
+              label="통계 지역 선택"
+              onChange={handleFilter('location')}
+              selected={localTypeValue}
+            >
               {localInfoData.map((item) => {
                 return (
                   <option key={item.location} value={item.location} lat={item.lat} lon={item.lon}>
@@ -40,18 +45,26 @@ export default function ChartComponent({ chartData, localInfoData }) {
             </BaseSelect>
           </div>
           <div>
-            <BaseSelect onChange={handleFilter('gender')} selected={genderTypeValue}>
-              {genderType.map((item) => {
-                return (
-                  <option key={item} value={item}>
-                    {item}
-                  </option>
-                );
-              })}
+            <BaseSelect
+              id="chart-gender-select"
+              label="성별 선택"
+              onChange={handleFilter('gender')}
+              selected={genderTypeValue}
+            >
+              {genderType.map((item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))}
             </BaseSelect>
           </div>
           <div>
-            <BaseSelect onChange={handleFilter('age')} selected={ageTypeValue}>
+            <BaseSelect
+              id="chart-age-select"
+              label="연령대 선택"
+              onChange={handleFilter('age')}
+              selected={ageTypeValue}
+            >
               {ageType.map((item) => {
                 return (
                   <option key={item} value={item}>

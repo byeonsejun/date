@@ -45,6 +45,7 @@ export default function SelectShowMapType() {
 
   useEffect(() => {
     if (findStorageItem('locationAgree') && !myGeoInfo) return;
+    if (location === '현재 위치' && !myGeoInfo?.gu) return;
     if (!showPoint) {
       if (findStorageItem('locationAgree') && location !== '현재 위치') return;
     }

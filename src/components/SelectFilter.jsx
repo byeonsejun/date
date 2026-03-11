@@ -1,16 +1,15 @@
 'use client';
 
-import React from 'react';
 import BaseSelect from './ui/BaseSelect';
 import { findStorageItem } from '@/\butil/util';
 import useLocationStore from '@/stores/LocationStore';
 
 export default function SelectFilter() {
-  const { allDistrictInfo, setLocation, location } = useLocationStore();
+  const { allDistrictInfo, setLocation, location, showSeoulOnlyToast } = useLocationStore();
 
   const handleSearch = (label) => (value) => {
     if (label === 'location' && value === '현재 위치' && findStorageItem('outside')) {
-      alert('서울이 아닌 지역에서는 현재 위치를 사용하실 수 없습니다.');
+      showSeoulOnlyToast();
       return;
     }
     if (label === 'location' && value === '현재 위치' && !findStorageItem('locationAgree')) {
@@ -19,12 +18,16 @@ export default function SelectFilter() {
     }
     label === 'location' && setLocation(value);
   };
-
   return (
     <div className="w-full flex flex-col gap-2 mb-4">
       <div className="flex items-center justify-between gap-6">
         <div className="w-full">
-          <BaseSelect onChange={handleSearch('location')} selected={location}>
+          <BaseSelect
+            id="location-select"
+            label="데이트 지역 선택"
+            onChange={handleSearch('location')}
+            selected={location}
+          >
             {allDistrictInfo.map((item) => {
               return (
                 <option key={item.location} value={item.location} lat={item.lat} lon={item.lon}>
