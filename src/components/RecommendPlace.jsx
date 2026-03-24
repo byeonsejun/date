@@ -12,26 +12,25 @@ export default function RecommendPlace() {
   const { location, culturalSpaceInfo, dodreamgilInfo, parkInfo, myGeoInfo, onClickRecommendMaker } =
     useLocationStore();
   const [selectedType, setSelectedType] = useState('추천');
-  const [showContent, setShowContent] = useState(undefined);
-
-  const randomPick = (myLc, cult, park, dodr) => {
-    const type = '랜덤';
-    const randomItem = getFilterInfoData(type, myLc, cult, dodr, park);
-    setShowContent(randomItem);
-  };
+  const [recommendContent, setRecommendContent] = useState(undefined);
+  const [popularContent, setPopularContent] = useState(undefined);
 
   useEffect(() => {
     if (
       culturalSpaceInfo.length === 0 ||
-      dodreamgilInfo === 0 ||
-      parkInfo === 0 ||
+      dodreamgilInfo.length === 0 ||
+      parkInfo.length === 0 ||
       (findStorageItem('locationAgree') && !myGeoInfo)
     )
       return;
     if (location === '현재 위치' && !myGeoInfo?.gu) return;
     const mylocation = location === '현재 위치' ? myGeoInfo.gu.long_name : location;
-    randomPick(mylocation, culturalSpaceInfo, dodreamgilInfo, parkInfo);
-  }, [location, culturalSpaceInfo, dodreamgilInfo, parkInfo, myGeoInfo, selectedType]);
+    const type = '랜덤';
+    const recommendItem = getFilterInfoData(type, mylocation, culturalSpaceInfo, parkInfo, dodreamgilInfo);
+    const popularItem = getFilterInfoData(type, mylocation, culturalSpaceInfo, parkInfo, dodreamgilInfo);
+    setRecommendContent(recommendItem);
+    setPopularContent(popularItem);
+  }, [location, culturalSpaceInfo, dodreamgilInfo, parkInfo, myGeoInfo]);
 
   return (
     <div className="border border-[#ededed] w-full h-[410px] overflow-hidden rounded-lg p-2 flex flex-col gap-2">
@@ -55,8 +54,8 @@ export default function RecommendPlace() {
       </p>
       <div>
         <ul className="flex flex-col gap-2">
-          {showContent &&
-            showContent.map((item) => {
+          {(selectedType === '추천' ? recommendContent : popularContent) &&
+            (selectedType === '추천' ? recommendContent : popularContent).map((item) => {
               return (
                 <li
                   key={`type-key-${item.type}`}

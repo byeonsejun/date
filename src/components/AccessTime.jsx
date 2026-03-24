@@ -34,5 +34,5 @@ export default function AccessTime() {
     };
   }, []);
 
-  return <div>{currentTime && currentTime}</div>;
+  return <div className="text-black">{currentTime && currentTime}</div>;
 }

@@ -27,22 +27,6 @@ export default function NavComponent({ locationInfo }) {
     setLocationInfo(locationInfo);
   }, [locationInfo, setLocationInfo]);
 
-  // useEffect(() => {
-  //   setOpenModal(true);
-  // }, []);
-  // useEffect(() => {
-  //   if (surveyStep !== 99) return;
-  //   const closeNumInterval = setInterval(() => {
-  //     setCloseNum((prev) => prev - 1);
-  //   }, 1000);
-  //   if (closeNum === 0) {
-  //     clearInterval(closeNumInterval);
-  //     setSurveyStep(100);
-  //     setOpenModal(false);
-  //   }
-  //   return () => clearInterval(closeNumInterval);
-  // }, [surveyStep, closeNum]);
-
   return (
     <div>
       <nav className="flex items-center gap-2">
@@ -50,21 +34,18 @@ export default function NavComponent({ locationInfo }) {
           <React.Fragment key={`${item.name}-nav`}>
             <Link
               href={item.href}
-              className={currentUrl !== item.href ? 'opacity-50 hover:opacity-100' : ''}
+              className={currentUrl !== item.href ? 'opacity-50 hover:opacity-100 text-black' : 'text-black'}
             >
               {item.name}
             </Link>
             {index < navMenu.length - 1 && (
-              <span className="opacity-60 select-none" aria-hidden="true">/</span>
+              <span className="opacity-60 select-none text-black" aria-hidden="true">
+                /
+              </span>
             )}
           </React.Fragment>
         ))}
       </nav>
-      {/* {openModal && (
-        <ModalPortal>
-          <SurveyModal onClose={() => setOpenModal(false)} closeNum={closeNum} />
-        </ModalPortal>
-      )} */}
     </div>
   );
 }

@@ -36,17 +36,6 @@
         "p_name": "중구청 공원녹지과"
       },
       {
-        "latitude": null,
-        "longitude": null,
-        "p_park": "서울로7017",
-        "p_list_content": "서울로7017은 70년대 준공된 서울역 고가가 안전에 문제점이 도출되면서 철거가 될 상황에 놓여지게 되었는데 이를 상징적으로는 서울의 관문이자 지역재생의 촉매제 역할을 담당하는 17개의 사람길로 재탄생된 곳입니다. 공중보행로의 기능과 녹지가 결합되어 살아있는 식물도감이 되며 1km의 도심전망대 역할까지 수행하고 있습니다.",
-        "p_img": "http://parks.seoul.go.kr/file/info/view.do?fIdx=1477",
-        "template_url": "https://parks.seoul.go.kr/template/sub/seoullo7017.do",
-        "p_admintel": "02-313-7017",
-        "p_addr": "서울로7017",
-        "p_name": "중부공원여가센터"
-      },
-      {
         "latitude": "37.560868",
         "longitude": "126.969742",
         "p_park": "서소문역사공원",
