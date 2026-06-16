@@ -1,33 +1,72 @@
 {
-  "name": "new-brand",
+  "name": "seoul-date-platform",
   "version": "0.1.0",
   "private": true,
+  "description": "Map-first Seoul dating planner combining weather, location, and place recommendations.",
+  "author": "BYUNSEJUN",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/byeonsejun/date.git"
+  },
+  "engines": {
+    "node": ">=18.17.0",
+    "npm": ">=9.0.0"
+  },
+  "packageManager": "npm@10",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --webpack",
     "build": "next build",
+    "analyze": "ANALYZE=true next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "format": "prettier --write .",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,json,md}": [
+      "prettier --write"
+    ],
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix"
+    ]
   },
   "dependencies": {
     "@react-google-maps/api": "^2.19.3",
+    "chart.js": "^4.5.1",
     "date-fns": "^3.3.1",
-    "next": "13.5.6",
-    "proj4": "^2.10.0",
+    "dompurify": "^3.4.7",
+    "focus-trap-react": "^12.0.2",
+    "next": "^16.2.6",
     "qrcode.react": "^3.1.0",
-    "react": "^18",
+    "react": "^18.3.1",
     "react-chartjs-2": "^5.2.0",
-    "react-dom": "^18",
+    "react-dom": "^18.3.1",
     "react-icons": "^5.0.1",
     "react-spinners": "^0.13.8",
     "react-stars": "^2.2.5",
     "swr": "^2.2.5",
+    "zod": "^4.4.3",
     "zustand": "^4.5.2"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.5",
+    "@next/bundle-analyzer": "^16.2.6",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/node": "25.9.1",
     "autoprefixer": "^10",
-    "eslint": "^8",
-    "eslint-config-next": "13.5.6",
+    "eslint": "^9.39.1",
+    "eslint-config-next": "^16.2.6",
+    "husky": "^9.1.7",
+    "jsdom": "^29.1.1",
+    "lint-staged": "^17.0.7",
+    "playwright": "^1.60.0",
     "postcss": "^8",
-    "tailwindcss": "^3"
+    "prettier": "^3.8.3",
+    "tailwindcss": "^3",
+    "vitest": "^2.1.8"
   }
 }
