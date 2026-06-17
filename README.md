@@ -401,7 +401,9 @@ Turbopack 개발 서버의 Route Handler 컴파일 이슈(`ComponentMod.handler 
 
 ### 링크 / 배포
 
-- 📱 React Native 앱 저장소: [RN_REPO_URL]
-- 📦 APK 다운로드: [APK_URL]
+- 📱 React Native 앱 저장소: [github.com/byeonsejun/date-rn](https://github.com/byeonsejun/date-rn)
+- 📦 APK 다운로드: [v1.0.0 APK](https://github.com/byeonsejun/date-rn/releases/download/v1.0.0/application-ee38c224-aa77-4725-8989-20ec94b234b7.apk)
+
+> **설치 안내**: APK는 **Android 전용**이며, 스토어 미출시 상태라 설치 시 기기에서 **"알 수 없는 출처(출처를 알 수 없는 앱) 설치 허용"** 을 켜야 합니다. (iOS는 사이드로딩 제약으로 APK 설치 불가)
 
 > **상태**: EAS Build(`preview` = APK) 기반 **내부 테스트 단계**입니다. 핵심 기능(지도·위치 동의·날씨·추천·맛집·통계)은 웹과 대응되며, 웹 플랫폼용 지도 화면 등 일부를 보강 중입니다. 스토어 출시는 진행하지 않았습니다.
