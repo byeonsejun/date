@@ -20,19 +20,19 @@
 
 ```mermaid
 flowchart LR
-  User[User]
-  Browser[Browser / Client Components]
-  NextApp[Next.js App Router]
-  Route[/app/api/* Route Handlers]
-  OpenWeather[OpenWeather API]
-  GoogleMaps[Google Maps API]
-  DataJSON[data/*.json]
-  Zustand[Zustand Store]
-  MapUI[Map UI]
-  WeatherUI[Weather UI]
-  RecommendUI[Recommend UI]
+  User["User"]
+  Browser["Browser / Client Components"]
+  NextApp["Next.js App Router"]
+  Route["/app/api/* Route Handlers"]
+  OpenWeather["OpenWeather API"]
+  GoogleMaps["Google Maps API"]
+  DataJSON["data/*.json"]
+  Zustand["Zustand Store"]
+  MapUI["Map UI"]
+  WeatherUI["Weather UI"]
+  RecommendUI["Recommend UI"]
 
-  User -->|위치 동의/구 선택| Browser
+  User -->|"위치 동의/구 선택"| Browser
   Browser --> NextApp
   NextApp -->|BFF 호출| Route
   Route --> OpenWeather
