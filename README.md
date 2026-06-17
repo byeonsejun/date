@@ -1,9 +1,10 @@
 ## 1) 프로젝트 소개 (Project Overview)
 
 ![CI](https://img.shields.io/github/actions/workflow/status/byeonsejun/date/ci.yml?branch=main&label=CI)
-![Lighthouse](https://img.shields.io/badge/Lighthouse-Home%2029%20%7C%20Stats%2060-orange)
+![Lighthouse](https://img.shields.io/badge/Lighthouse-Home%2029-orange)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Tech](https://img.shields.io/badge/Next.js-16%20App%20Router-black)
+![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6)
 
 **서울 데이트 의사결정을 "날씨 × 위치 × 장소 데이터"로 압축한, 지도 중심 실시간 추천 플랫폼입니다.**
 
@@ -343,7 +344,7 @@ Turbopack 개발 서버의 Route Handler 컴파일 이슈(`ComponentMod.handler 
 - 이미지 `alt`를 의미 기반으로 정리: 추천/식당/지도 대표 이미지는 `"{name} 대표 이미지"`, 날씨 아이콘은 날씨 설명 텍스트, 순수 장식 이미지는 `alt=""` + `aria-hidden="true"`
 - 측정 결과: Lighthouse Accessibility **96** (아래 측정 지표 섹션 참고)
 
-> 마커 이동 버튼 등 지도 인터랙션 요소에는 `aria-label`(예: `"{title} 위치로 지도 이동"`)을 부여. 추가 스크린리더 시나리오 검증은 [TODO].
+> 마커 이동 버튼 등 지도 인터랙션 요소에는 `aria-label`(예: `"{title} 위치로 지도 이동"`)을 부여. 추가 스크린리더 시나리오 검증은 후속 과제로 둔다.
 
 ---
 
@@ -391,9 +392,9 @@ Turbopack 개발 서버의 Route Handler 컴파일 이슈(`ComponentMod.handler 
 
 ## 7) 🧩 크로스 플랫폼 확장 (Cross-Platform)
 
-이 레포는 **반응형 웹(Next.js)** 구현체이며, 동일 서비스를 **React Native 네이티브 앱으로 별도 레포에서 재구현**했습니다. 두 구현체는 코드를 공유하지 않습니다 — 웹은 JavaScript, RN은 **Expo(SDK 54) + expo-router + TypeScript + FSD(Feature-Sliced Design)** 스택이라 소스 공유가 불가능하며, RN은 웹의 도메인 로직·데이터·상태 설계를 **참조해 처음부터 새로 작성**했습니다.
+이 레포는 **반응형 웹(Next.js App Router)** 구현체이며, 동일 서비스를 **React Native 네이티브 앱으로 별도 레포에서 재구현**했습니다. 두 구현체는 소스를 공유하지 않습니다 — 다만 그 이유는 _언어가 달라서가 아닙니다_. **웹·RN 모두 TypeScript**이며, 갈라지는 지점은 **프레임워크·런타임·아키텍처**입니다(웹: Next.js App Router / RN: Expo + expo-router + FSD(Feature-Sliced Design)). 런타임과 UI 계층이 근본적으로 달라 화면 코드를 그대로 옮길 수는 없습니다.
 
-핵심은 "코드를 재사용"한 것이 아니라, **도메인 로직·API 계약·상태 모델을 UI에서 분리해 설계해둔 덕분에 코드를 공유하지 않고도 같은 설계를 RN으로 옮기는 비용이 낮았다**는 점입니다.
+핵심은 같은 제품을 **두 번 만든** 것이 아니라, **재사용 가능한 경계(도메인 로직·상태 모델·BFF API 계약)를 UI에서 분리해 그어둔** 덕분에, RN에서는 그 경계를 그대로 따르고 **UI만 다시 구현**하면 됐다는 점입니다. 실제로 RN은 웹과 같은 `/api/*` BFF 계약을 프록시로 공유할 수 있습니다(아래 API 항목 참고).
 
 - **상태** — 웹의 단일 `LocationStore`를 RN에서는 FSD 원칙에 따라 entity별 Zustand 스토어(location / weather / map / restaurant 등)로 분해.
 - **데이터** — 서울 자치구 정적 데이터·차트 데이터(`chartData.json` 등)는 웹 자산을 옮겨와 RN 타입으로 재가공.
@@ -406,4 +407,4 @@ Turbopack 개발 서버의 Route Handler 컴파일 이슈(`ComponentMod.handler 
 
 > **설치 안내**: APK는 **Android 전용**이며, 스토어 미출시 상태라 설치 시 기기에서 **"알 수 없는 출처(출처를 알 수 없는 앱) 설치 허용"** 을 켜야 합니다. (iOS는 사이드로딩 제약으로 APK 설치 불가)
 
-> **상태**: EAS Build(`preview` = APK) 기반 **내부 테스트 단계**입니다. 핵심 기능(지도·위치 동의·날씨·추천·맛집·통계)은 웹과 대응되며, 웹 플랫폼용 지도 화면 등 일부를 보강 중입니다. 스토어 출시는 진행하지 않았습니다.
+> **상태**: EAS Build(`preview` = APK) 기반 **내부 테스트 단계**입니다. 핵심 기능(지도·위치 동의·날씨·추천·맛집)은 웹과 대응되며, 웹 플랫폼용 지도 화면 등 일부를 보강 중입니다. (통계는 데모 데이터라 웹·앱 모두 `/statistics`를 홈으로 redirect 처리해 입구를 제거했습니다.) 스토어 출시는 진행하지 않았습니다.
