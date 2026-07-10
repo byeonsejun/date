@@ -7,10 +7,14 @@ export const LatLonRequestSchema = z.object({
 
 export const WeatherTypeSchema = z.enum(['weather', 'forecast']);
 
+/** 앱(RN/웹) 언어 코드. 없으면 기존 동작(한국어)을 유지하기 위해 'ko'로 기본값을 둔다. */
+export const WeatherLangSchema = z.enum(['ko', 'en']).default('ko');
+
 export const WeatherRequestSchema = z.object({
   type: WeatherTypeSchema,
   lat: z.coerce.number(),
   lon: z.coerce.number(),
+  lang: WeatherLangSchema,
 });
 
 const WeatherMetaSchema = z.object({
@@ -105,6 +109,7 @@ export const NormalizedRestaurantSchema = z.object({
   imgSrc: z.string(),
 });
 
+export type WeatherLang = z.infer<typeof WeatherLangSchema>;
 export type WeatherRequest = z.infer<typeof WeatherRequestSchema>;
 export type WeatherCurrentResponse = z.infer<typeof WeatherCurrentResponseSchema>;
 export type WeatherForecastResponse = z.infer<typeof WeatherForecastResponseSchema>;

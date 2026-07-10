@@ -5,9 +5,19 @@ import {
   WeatherRequestSchema,
   type WeatherCurrentResponse,
   type WeatherForecastResponse,
+  type WeatherLang,
 } from '@/types/external-api';
 
 const WEATHER_API_KEY = process.env.WEATHER_API_KEY ?? process.env.NEXT_PUBLIC_WEATHER_API_KEY;
+
+/**
+ * 앱 언어 코드 → OpenWeather `lang` 파라미터 코드 매핑.
+ * OpenWeather는 한국어를 ISO 639-1 `ko`가 아니라 자체 코드 `kr`로 받는다(공식 문서 기준 알려진 예외).
+ */
+const OPENWEATHER_LANG_BY_APP_LANG: Record<WeatherLang, string> = {
+  ko: 'kr',
+  en: 'en',
+};
 
 async function fetchWeather(input: unknown) {
   if (!WEATHER_API_KEY) {
@@ -18,10 +28,11 @@ async function fetchWeather(input: unknown) {
   if (!parseResult.success) {
     return NextResponse.json({ message: 'type, lat, lon are required' }, { status: 400 });
   }
-  const { type, lat, lon } = parseResult.data;
+  const { type, lat, lon, lang } = parseResult.data;
+  const openWeatherLang = OPENWEATHER_LANG_BY_APP_LANG[lang];
 
   const data = await fetch(
-    `https://api.openweathermap.org/data/2.5/${type}?lat=${lat}&lon=${lon}&appid=${WEATHER_API_KEY}&lang=kr&&units=metric`
+    `https://api.openweathermap.org/data/2.5/${type}?lat=${lat}&lon=${lon}&appid=${WEATHER_API_KEY}&lang=${openWeatherLang}&units=metric`
   ).then((res) => res.json());
 
   if (type === 'weather') {
@@ -52,11 +63,12 @@ export async function GET(req: Request) {
   const type = searchParams.get('type');
   const lat = searchParams.get('lat');
   const lon = searchParams.get('lon');
+  const lang = searchParams.get('lang') ?? undefined;
 
-  return fetchWeather({ type, lat, lon });
+  return fetchWeather({ type, lat, lon, lang });
 }
 
 export async function POST(req: Request) {
-  const { type, lat, lon } = await req.json();
-  return fetchWeather({ type, lat, lon });
+  const { type, lat, lon, lang } = await req.json();
+  return fetchWeather({ type, lat, lon, lang });
 }
