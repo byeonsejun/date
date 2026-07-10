@@ -17,6 +17,16 @@ export const WeatherRequestSchema = z.object({
   lang: WeatherLangSchema,
 });
 
+/**
+ * Google Places `language` 파라미터는 ko/en을 ISO 639-1 그대로 받는다(OpenWeather의 kr 같은 예외 없음).
+ * `LatLonRequestSchema`는 `/api/location`과 공유하므로 직접 확장하지 않고 별도 스키마로 둔다.
+ */
+export const RestaurantLangSchema = z.enum(['ko', 'en']).default('ko');
+
+export const RestaurantRequestSchema = LatLonRequestSchema.extend({
+  lang: RestaurantLangSchema,
+});
+
 const WeatherMetaSchema = z.object({
   description: z.string(),
   icon: z.string(),
@@ -117,3 +127,5 @@ export type GoogleGeocodeResponse = z.infer<typeof GoogleGeocodeResponseSchema>;
 export type GooglePlaceResult = z.infer<typeof GooglePlaceResultSchema>;
 export type GooglePlacesTextSearchResponse = z.infer<typeof GooglePlacesTextSearchResponseSchema>;
 export type NormalizedRestaurant = z.infer<typeof NormalizedRestaurantSchema>;
+export type RestaurantLang = z.infer<typeof RestaurantLangSchema>;
+export type RestaurantRequest = z.infer<typeof RestaurantRequestSchema>;

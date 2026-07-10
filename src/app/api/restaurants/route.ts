@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import {
   GooglePlaceResultSchema,
   GooglePlacesTextSearchResponseSchema,
-  LatLonRequestSchema,
+  RestaurantRequestSchema,
   type NormalizedRestaurant,
 } from '@/types/external-api';
 import { z } from 'zod';
@@ -44,14 +44,14 @@ async function fetchRestaurants(input: unknown, imgBaseUrl: string) {
     return NextResponse.json({ message: 'Missing GOOGLE_MAPS_SERVER_KEY' }, { status: 500 });
   }
 
-  const parseResult = LatLonRequestSchema.safeParse(input);
+  const parseResult = RestaurantRequestSchema.safeParse(input);
   if (!parseResult.success) {
     return NextResponse.json({ message: 'lat and lon are required' }, { status: 400 });
   }
-  const { lat, lon } = parseResult.data;
+  const { lat, lon, lang } = parseResult.data;
 
   const restaurantData = await fetch(
-    `https://maps.googleapis.com/maps/api/place/textsearch/json?query=맛집&location=${lat},${lon}&radius=1000&language=ko&key=${GOOGLE_MAPS_SERVER_KEY}&types=restaurant`
+    `https://maps.googleapis.com/maps/api/place/textsearch/json?query=맛집&location=${lat},${lon}&radius=1000&language=${lang}&key=${GOOGLE_MAPS_SERVER_KEY}&types=restaurant`
   ).then((res) => res.json());
 
   const validated = GooglePlacesTextSearchResponseSchema.safeParse(restaurantData);
@@ -127,15 +127,16 @@ export async function GET(req: Request) {
   const maxwidth = searchParams.get('maxwidth') ?? '250';
   const lat = searchParams.get('lat');
   const lon = searchParams.get('lon');
+  const lang = searchParams.get('lang') ?? undefined;
 
   if (photoReference) {
     return fetchPhoto({ photoReference, maxwidth });
   }
 
-  return fetchRestaurants({ lat, lon }, getImageBaseUrl(req));
+  return fetchRestaurants({ lat, lon, lang }, getImageBaseUrl(req));
 }
 
 export async function POST(req: Request) {
-  const { lat, lon } = await req.json();
-  return fetchRestaurants({ lat, lon }, getImageBaseUrl(req));
+  const { lat, lon, lang } = await req.json();
+  return fetchRestaurants({ lat, lon, lang }, getImageBaseUrl(req));
 }
