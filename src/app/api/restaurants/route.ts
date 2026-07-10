@@ -21,7 +21,9 @@ const PhotoRequestSchema = z.object({
 function getRequestOrigin(req: Request): string {
   const url = new URL(req.url);
   const host = req.headers.get('x-forwarded-host') ?? req.headers.get('host') ?? url.host;
-  const protocol = (req.headers.get('x-forwarded-proto') ?? url.protocol.replace(':', '')).split(',')[0].trim();
+  const protocol = (req.headers.get('x-forwarded-proto') ?? url.protocol.replace(':', ''))
+    .split(',')[0]
+    .trim();
   return `${protocol}://${host}`;
 }
 
@@ -35,7 +37,8 @@ function getRequestOrigin(req: Request): string {
  */
 function getImageBaseUrl(req: Request): string {
   const wantsAbsolute =
-    req.headers.get('x-client')?.toLowerCase() === 'rn' || req.headers.get('x-absolute-img') === '1';
+    req.headers.get('x-client')?.toLowerCase() === 'rn' ||
+    req.headers.get('x-absolute-img') === '1';
   return wantsAbsolute ? getRequestOrigin(req) : '';
 }
 
@@ -107,7 +110,10 @@ async function fetchPhoto(input: unknown) {
   );
 
   if (!imageResponse.ok) {
-    return NextResponse.json({ message: 'Failed to fetch place photo' }, { status: imageResponse.status });
+    return NextResponse.json(
+      { message: 'Failed to fetch place photo' },
+      { status: imageResponse.status }
+    );
   }
 
   const imageBuffer = await imageResponse.arrayBuffer();
