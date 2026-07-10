@@ -38,7 +38,10 @@ async function fetchWeather(input: unknown) {
   if (type === 'weather') {
     const validated = WeatherCurrentResponseSchema.safeParse(data);
     if (!validated.success) {
-      return NextResponse.json({ message: 'Invalid OpenWeather weather response' }, { status: 502 });
+      return NextResponse.json(
+        { message: 'Invalid OpenWeather weather response' },
+        { status: 502 }
+      );
     }
     const response: WeatherCurrentResponse & { date: Date } = {
       ...validated.data,
