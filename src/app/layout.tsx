@@ -4,6 +4,7 @@ import './common.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import SWRConfigContext from '@/context/SWRConfigContext';
+import I18nProvider from '@/context/I18nProvider';
 import LocationConsentModal from '@/components/LocationConsentModal';
 import SeoulOnlyToast from '@/components/SeoulOnlyToast';
 
@@ -26,14 +27,16 @@ export default function RootLayout({ children }) {
   return (
     <html lang="ko" className={`${juaFont.variable} ${juaFont.className}`}>
       <body className="w-full min-h-screen flex flex-col max-w-[2560px] m-auto">
-        <Header />
-        <main className="grow overflow-visible lg:overflow-hidden">
-          <SWRConfigContext>{children}</SWRConfigContext>
-        </main>
-        <Footer />
-        <div id="portal" />
-        <LocationConsentModal />
-        <SeoulOnlyToast />
+        <I18nProvider>
+          <Header />
+          <main className="grow overflow-visible lg:overflow-hidden">
+            <SWRConfigContext>{children}</SWRConfigContext>
+          </main>
+          <Footer />
+          <div id="portal" />
+          <LocationConsentModal />
+          <SeoulOnlyToast />
+        </I18nProvider>
       </body>
     </html>
   );
