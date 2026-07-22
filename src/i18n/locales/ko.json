@@ -8,10 +8,12 @@
     "initializing": "설정 불러오는 중...",
     "noInfo": "정보 없음",
     "openNow": "영업중",
-    "closed": "영업 종료"
+    "closed": "영업 종료",
+    "closeNotification": "알림 닫기"
   },
   "location": {
-    "consentMessage": "서울, 너와 함께는 현재 계신 곳을 중심으로 맞춤형 날씨와 데이트 장소를 추천해 드려요!\n(본 서비스는 서울 지역 한정으로 제공됩니다.)",
+    "consentMessage": "서울, 너와 함께는 현재 계신 곳을 중심으로 맞춤형 날씨와 데이트 장소를 추천해 드려요! 📍\n(본 서비스는 서울 지역 한정으로 제공됩니다.)",
+    "consentDialogLabel": "위치 정보 동의 안내",
     "agree": "동의",
     "decline": "거부",
     "seoulOnlyToast": "서울 지역만 서비스되고 있습니다. 원하시는 지역을 선택해 주세요."

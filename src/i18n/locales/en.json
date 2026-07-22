@@ -8,10 +8,12 @@
     "initializing": "Loading settings...",
     "noInfo": "No info",
     "openNow": "Open now",
-    "closed": "Closed"
+    "closed": "Closed",
+    "closeNotification": "Close notification"
   },
   "location": {
-    "consentMessage": "Seoul, With You recommends personalized weather and date spots based on your current location!\n(This service is currently limited to Seoul.)",
+    "consentMessage": "Seoul, With You recommends personalized weather and date spots based on your current location! 📍\n(This service is currently limited to Seoul.)",
+    "consentDialogLabel": "Location permission notice",
     "agree": "Agree",
     "decline": "Decline",
     "seoulOnlyToast": "This service is only available in Seoul. Please select a different area."
