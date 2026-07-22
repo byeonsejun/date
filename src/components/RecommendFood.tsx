@@ -12,7 +12,8 @@ import ReactStars from 'react-stars';
 import { useShallow } from 'zustand/react/shallow';
 
 export default function RecommendFood() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const language = i18n.language;
   const { location, myGeoInfo, allDistrictInfo } = useLocationStore(
     useShallow((state) => ({
       location: state.location,
@@ -53,12 +54,12 @@ export default function RecommendFood() {
       }
 
       const getRestaurantsApi = await fetch(
-        `/api/restaurants?lat=${currentGeo.lat}&lon=${currentGeo.lon}`
+        `/api/restaurants?lat=${currentGeo.lat}&lon=${currentGeo.lon}&lang=${language}`
       ).then((res) => res.json());
       setRecommendData(getRestaurantsApi);
       setLoading(false);
     },
-    [setRecommendData]
+    [setRecommendData, language]
   );
 
   useEffect(() => {
@@ -70,9 +71,11 @@ export default function RecommendFood() {
       return;
     }
     if (!expansion) return;
-    if (currentLocationFlag === location) return;
+    // 언어를 키에 포함 — 구가 같아도 언어만 토글하면 재요청되게(RN 캐시 키 language 포함과 동일 취지)
+    const requestKey = `${language}:${location}`;
+    if (currentLocationFlag === requestKey) return;
     getRecommendRestaurants(location, allDistrictInfo, myGeoInfo);
-    setCurrentLocationFlag(location);
+    setCurrentLocationFlag(requestKey);
   }, [
     myGeoInfo,
     location,
@@ -80,6 +83,7 @@ export default function RecommendFood() {
     expansion,
     currentLocationFlag,
     getRecommendRestaurants,
+    language,
   ]);
 
   return (

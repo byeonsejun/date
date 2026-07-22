@@ -22,34 +22,39 @@ async function fetchJsonOrThrow(url) {
   return res.json();
 }
 
-// 오늘의 날씨정보 받아오기
-export const getRealTimeWeather = async (lat, lon) => {
+// 오늘의 날씨정보 받아오기 (lang: OpenWeather description 언어. 미전달 시 BFF가 ko 기본)
+export const getRealTimeWeather = async (lat, lon, lang) => {
   const type = 'weather';
-  const todayWeather = await fetchJsonOrThrow(`/api/weather?type=${type}&lat=${lat}&lon=${lon}`);
+  const langParam = lang ? `&lang=${lang}` : '';
+  const todayWeather = await fetchJsonOrThrow(
+    `/api/weather?type=${type}&lat=${lat}&lon=${lon}${langParam}`
+  );
   return todayWeather;
 };
 
 // 미래의 날씨정보 받아오기
-export const getForecastWeather = async (lat, lon) => {
+export const getForecastWeather = async (lat, lon, lang) => {
   const type = 'forecast';
-  const getInfo = await fetchJsonOrThrow(`/api/weather?type=${type}&lat=${lat}&lon=${lon}`)
-    .then((data) => {
-      data.list.map((item) => {
-        const realTime = new Date();
-        const itemDate = fromUnixTime(item.dt);
-        const finishItemDate = fromUnixTime(item.dt);
-        const formattedDate = format(itemDate, 'ha');
-        finishItemDate.setHours(23, 59, 59);
-        const diffInTime = finishItemDate.getTime() - realTime.getTime();
-        const diffInDays = Math.floor(diffInTime / (1000 * 60 * 60 * 24));
+  const langParam = lang ? `&lang=${lang}` : '';
+  const getInfo = await fetchJsonOrThrow(
+    `/api/weather?type=${type}&lat=${lat}&lon=${lon}${langParam}`
+  ).then((data) => {
+    data.list.map((item) => {
+      const realTime = new Date();
+      const itemDate = fromUnixTime(item.dt);
+      const finishItemDate = fromUnixTime(item.dt);
+      const formattedDate = format(itemDate, 'ha');
+      finishItemDate.setHours(23, 59, 59);
+      const diffInTime = finishItemDate.getTime() - realTime.getTime();
+      const diffInDays = Math.floor(diffInTime / (1000 * 60 * 60 * 24));
 
-        item.date = itemDate;
-        item.time = formattedDate;
-        item.day_value = diffInDays;
-        return item;
-      });
-      return data.list;
+      item.date = itemDate;
+      item.time = formattedDate;
+      item.day_value = diffInDays;
+      return item;
     });
+    return data.list;
+  });
   return getInfo;
 };
 
