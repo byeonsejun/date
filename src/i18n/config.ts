@@ -13,19 +13,6 @@ export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
 
 export const DEFAULT_LANGUAGE: SupportedLanguage = 'ko';
 
-const isSupportedLanguage = (value: string | null | undefined): value is SupportedLanguage =>
-  (SUPPORTED_LANGUAGES as readonly string[]).includes(value ?? '');
-
-/**
- * 브라우저 언어를 감지하되 미지원 언어면 DEFAULT_LANGUAGE로 폴백한다.
- * (RN의 expo-localization 대신 navigator.language 사용. 서버에는 navigator가 없어 기본값 반환.)
- */
-export const detectBrowserLanguage = (): SupportedLanguage => {
-  if (typeof navigator === 'undefined') return DEFAULT_LANGUAGE;
-  const code = navigator.language?.split('-')[0];
-  return isSupportedLanguage(code) ? code : DEFAULT_LANGUAGE;
-};
-
 /**
  * SSR 안전을 위해 항상 DEFAULT_LANGUAGE로 초기화한다. 서버 HTML과 클라이언트 첫 렌더가
  * 모두 'ko'로 일치하고, 저장된 언어/브라우저 언어로의 전환은 마운트 후(I18nProvider)에 일어난다.
