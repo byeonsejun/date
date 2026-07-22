@@ -4,6 +4,7 @@ import useLocationStore from '@/stores/useLocationStore';
 import useMapStore from '@/stores/useMapStore';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
+import { useTranslation } from 'react-i18next';
 
 const selectType = [
   { name: '전체', class: 'select_color_all' },
@@ -13,6 +14,7 @@ const selectType = [
 ];
 
 export default function SelectShowMapType() {
+  const { t } = useTranslation();
   const { location, myGeoInfo, parkInfo, dodreamgilInfo, culturalSpaceInfo } = useLocationStore(
     useShallow((state) => ({
       location: state.location,
@@ -30,26 +32,29 @@ export default function SelectShowMapType() {
     }))
   );
 
-  const getShowItem = useCallback((myLc, park, dodr, cult, type) => {
-    let currentInfo = [];
-    switch (type) {
-      case '전체':
-        currentInfo = getFilterInfoData(type, myLc, cult, park, dodr);
-        break;
-      case '문화공간':
-        currentInfo = getFilterInfoData(type, myLc, cult);
-        break;
-      case '공원':
-        currentInfo = getFilterInfoData(type, myLc, park);
-        break;
-      case '두드림길':
-        currentInfo = getFilterInfoData(type, myLc, dodr);
-        break;
-      default:
-        break;
-    }
-    setShowPoint(currentInfo);
-  }, [setShowPoint]);
+  const getShowItem = useCallback(
+    (myLc, park, dodr, cult, type) => {
+      let currentInfo = [];
+      switch (type) {
+        case '전체':
+          currentInfo = getFilterInfoData(type, myLc, cult, park, dodr);
+          break;
+        case '문화공간':
+          currentInfo = getFilterInfoData(type, myLc, cult);
+          break;
+        case '공원':
+          currentInfo = getFilterInfoData(type, myLc, park);
+          break;
+        case '두드림길':
+          currentInfo = getFilterInfoData(type, myLc, dodr);
+          break;
+        default:
+          break;
+      }
+      setShowPoint(currentInfo);
+    },
+    [setShowPoint]
+  );
 
   useEffect(() => {
     if (findStorageItem('locationAgree') && !myGeoInfo) return;
@@ -59,7 +64,11 @@ export default function SelectShowMapType() {
   }, [parkInfo, dodreamgilInfo, culturalSpaceInfo, myGeoInfo, location, selectedType, getShowItem]);
 
   return (
-    <ul className="flex items-center justify-center gap-2 absolute z-10 top-2 left-2" role="tablist" aria-label="지도 타입 필터">
+    <ul
+      className="flex items-center justify-center gap-2 absolute z-10 top-2 left-2"
+      role="tablist"
+      aria-label={t('map.typeFilterLabel')}
+    >
       {selectType.map((item) => (
         <li key={item.name} role="presentation">
           <button
@@ -67,7 +76,9 @@ export default function SelectShowMapType() {
             role="tab"
             aria-selected={selectedType === item.name}
             className={`${
-              selectedType === item.name ? `${item.class} text-white` : 'bg-white hover:bg-slate-100'
+              selectedType === item.name
+                ? `${item.class} text-white`
+                : 'bg-white hover:bg-slate-100'
             } p-2 rounded-lg`}
             onClick={() => setSelectedType(item.name)}
           >

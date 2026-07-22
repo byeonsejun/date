@@ -2,7 +2,13 @@
 'use client';
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { GoogleMap, InfoWindow, MarkerClustererF, MarkerF, useJsApiLoader } from '@react-google-maps/api';
+import {
+  GoogleMap,
+  InfoWindow,
+  MarkerClustererF,
+  MarkerF,
+  useJsApiLoader,
+} from '@react-google-maps/api';
 import useLocationStore from '@/stores/useLocationStore';
 import useMapStore from '@/stores/useMapStore';
 import useRecommendStore from '@/stores/useRecommendStore';
@@ -17,12 +23,15 @@ import RecommendFood from './RecommendFood';
 import ReactStars from 'react-stars';
 import ModalPortal from './ui/ModalPortal';
 import TextInfoModal from './ui/TextInfoModal';
+import { useTranslation } from 'react-i18next';
 
 const lib = ['places'];
 const DEFAULT_CENTER = { lat: 37.560825, lng: 126.995069 };
 const TILT_ENABLE_ZOOM = 16;
 const sanitizeHtml = (html) => DOMPurify.sanitize(html);
-const QRCode = dynamic(() => import('qrcode.react').then((module) => module.default), { ssr: false });
+const QRCode = dynamic(() => import('qrcode.react').then((module) => module.default), {
+  ssr: false,
+});
 const MAPS_VERSION = 'quarterly';
 
 const mapOptionsBase = {
@@ -49,7 +58,8 @@ function getHoverInfo(overMarker, myGeoInfo, showPoint, recommendData, expansion
   }
   if (showPoint && Array.isArray(showPoint)) {
     const found = showPoint.find((d) => Number(d.lat) === Number(overMarker));
-    if (found) return { position: { lat: Number(found.lat), lng: Number(found.lng) }, title: found.title };
+    if (found)
+      return { position: { lat: Number(found.lat), lng: Number(found.lng) }, title: found.title };
   }
   if (expansion && recommendData && Array.isArray(recommendData)) {
     const found = recommendData.find((d) => d.lat === overMarker);
@@ -62,7 +72,12 @@ function getSelectedInfo(selectedMarker, showPoint, recommendData, expansion) {
   if (selectedMarker == null) return null;
   if (showPoint && Array.isArray(showPoint)) {
     const found = showPoint.find((d) => Number(d.lat) === Number(selectedMarker));
-    if (found) return { position: { lat: Number(found.lat), lng: Number(found.lng) }, type: 'showPoint', data: found };
+    if (found)
+      return {
+        position: { lat: Number(found.lat), lng: Number(found.lng) },
+        type: 'showPoint',
+        data: found,
+      };
   }
   if (expansion && recommendData && Array.isArray(recommendData)) {
     const found = recommendData.find((d) => d.lat === selectedMarker);
@@ -76,27 +91,47 @@ function getSelectedInfo(selectedMarker, showPoint, recommendData, expansion) {
   return null;
 }
 
-const SelectedDetailContent = React.memo(function SelectedDetailContent({ selectedInfo, showContentImg, onImageLoad }) {
+const SelectedDetailContent = React.memo(function SelectedDetailContent({
+  selectedInfo,
+  showContentImg,
+  onImageLoad,
+}) {
+  const { t } = useTranslation();
   if (!selectedInfo) return null;
   if (selectedInfo.type === 'recommend') {
     const { name, imgSrc, openNow, formattedAddress, rating, userRatingsTotal } = selectedInfo.data;
     return (
       <div className="w-[250px] h-[300px] mt-3 px-1 flex flex-col gap-3 overflow-x-hidden overflow-y-auto font-normal">
         <div className="w-[250px] h-[150px] min-h-[150px] relative">
-          <Image src={imgSrc} alt={`${name} 대표 이미지`} sizes="250px" fill className="object-cover" />
-          <h3 className="absolute bottom-2 left-2 text-xs font-bold text-white p-2 bg-black bg-opacity-50">{name}</h3>
+          <Image
+            src={imgSrc}
+            alt={t('poi.representativeImageAlt', { name })}
+            sizes="250px"
+            fill
+            className="object-cover"
+          />
+          <h3 className="absolute bottom-2 left-2 text-xs font-bold text-white p-2 bg-black bg-opacity-50">
+            {name}
+          </h3>
         </div>
         <div className="flex flex-col gap-1 px-4">
           <h3 className="text-xs font-bold break-keep">
             {name}{' '}
             <span className="text-xs font-normal">
-              / {openNow ? '영업중' : '영업 종료'}
+              / {openNow ? t('common.openNow') : t('common.closed')}
             </span>
           </h3>
           <p className="text-xs font-normal">{formattedAddress}</p>
           <div className="flex items-center gap-1">
             <span className="text-xs">{rating}</span>
-            <ReactStars count={5} value={rating} size={12} color1="#dadce0" color2="#ffd700" edit={false} />
+            <ReactStars
+              count={5}
+              value={rating}
+              size={12}
+              color1="#dadce0"
+              color2="#ffd700"
+              edit={false}
+            />
             <span className="text-xs">{`(${userRatingsTotal})`}</span>
           </div>
         </div>
@@ -119,7 +154,10 @@ const SelectedDetailContent = React.memo(function SelectedDetailContent({ select
     url,
   } = selectedInfo.data;
   return (
-    <div id="select_pop" className="w-[250px] h-[300px] px-1 flex flex-col gap-3 overflow-x-hidden overflow-y-auto font-normal">
+    <div
+      id="select_pop"
+      className="w-[250px] h-[300px] px-1 flex flex-col gap-3 overflow-x-hidden overflow-y-auto font-normal"
+    >
       {img && (
         <div className="w-[250px] h-[150px] min-h-[150px] relative">
           <PuffLoader
@@ -139,7 +177,7 @@ const SelectedDetailContent = React.memo(function SelectedDetailContent({ select
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={img}
-            alt={`${title} 대표 이미지`}
+            alt={t('poi.representativeImageAlt', { name: title })}
             className="absolute inset-0 w-full h-full object-cover z-[2]"
             onLoad={() => onImageLoad(img)}
             onError={(e) => {
@@ -155,32 +193,38 @@ const SelectedDetailContent = React.memo(function SelectedDetailContent({ select
       )}
       <div className="flex flex-col gap-1 px-4">
         <h3 className="text-xs font-bold break-keep">
-          {title} {phone && <span className="text-xs font-normal"> / {phone} </span>} {contentType && <span className="text-xs">{contentType}</span>}
+          {title} {phone && <span className="text-xs font-normal"> / {phone} </span>}{' '}
+          {contentType && <span className="text-xs">{contentType}</span>}
         </h3>
         {courseName && <p className="text-xs">{courseName}</p>}
         {distance && (
           <p className="text-[12px]">
-            산책로: <span className="text-[11px]">{distance}</span>{' '}
+            {t('map.trailLabel')}: <span className="text-[11px]">{distance}</span>{' '}
             {level && (
               <span>
-                / 난이도: <span className="text-[11px]">{level}</span>
+                / {t('map.levelLabel')}: <span className="text-[11px]">{level}</span>
               </span>
             )}{' '}
             {leadTime && (
               <span>
-                / 소요시간: <span className="text-[11px]">{leadTime}</span>
+                / {t('map.durationLabel')}: <span className="text-[11px]">{leadTime}</span>
               </span>
             )}
           </p>
         )}
         {detailCourse && (
           <p>
-            코스안내: <span className="text-[11px]">{detailCourse}</span>
+            {t('map.courseGuideLabel')}: <span className="text-[11px]">{detailCourse}</span>
           </p>
         )}
         {address && <p className="text-xs">{address}</p>}
         {inCharge && <p>{inCharge}</p>}
-        {desc && <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(desc) }} className="overflow-x-auto window_info" />}
+        {desc && (
+          <div
+            dangerouslySetInnerHTML={{ __html: sanitizeHtml(desc) }}
+            className="overflow-x-auto window_info"
+          />
+        )}
         {url && (
           <p>
             <a href={url} target="blank" rel="noreferrer" className="line-clamp-1 mb-2">
@@ -194,7 +238,10 @@ const SelectedDetailContent = React.memo(function SelectedDetailContent({ select
   );
 });
 
-const CurrentLocationMarker = React.memo(function CurrentLocationMarker({ myGeoInfo, handleMarker }) {
+const CurrentLocationMarker = React.memo(function CurrentLocationMarker({
+  myGeoInfo,
+  handleMarker,
+}) {
   if (!myGeoInfo) return null;
   return (
     <MarkerF
@@ -215,7 +262,11 @@ const CurrentLocationMarker = React.memo(function CurrentLocationMarker({ myGeoI
   );
 });
 
-const ShowPointMarkers = React.memo(function ShowPointMarkers({ showPoint, handleMarker, clusterer }) {
+const ShowPointMarkers = React.memo(function ShowPointMarkers({
+  showPoint,
+  handleMarker,
+  clusterer,
+}) {
   if (!showPoint) return null;
   return showPoint.map((data, idx) => {
     const { type, lat, lng, title } = data;
@@ -242,7 +293,12 @@ const ShowPointMarkers = React.memo(function ShowPointMarkers({ showPoint, handl
   });
 });
 
-const RecommendMarkers = React.memo(function RecommendMarkers({ expansion, recommendData, handleMarker, clusterer }) {
+const RecommendMarkers = React.memo(function RecommendMarkers({
+  expansion,
+  recommendData,
+  handleMarker,
+  clusterer,
+}) {
   if (!expansion || !recommendData) return null;
   return recommendData.map((item) => {
     const { name, lat, lon, placeId } = item;
@@ -271,6 +327,7 @@ const RecommendMarkers = React.memo(function RecommendMarkers({ expansion, recom
 });
 
 export default function GoogleMapContainer() {
+  const { t } = useTranslation();
   const mapRef = useRef(null);
   const { location, allDistrictInfo, myGeoInfo } = useLocationStore(
     useShallow((state) => ({
@@ -311,11 +368,11 @@ export default function GoogleMapContainer() {
 
   const hoverInfo = useMemo(
     () => getHoverInfo(overMarker, myGeoInfo, showPoint, recommendData, expansion),
-    [overMarker, myGeoInfo, showPoint, recommendData, expansion],
+    [overMarker, myGeoInfo, showPoint, recommendData, expansion]
   );
   const selectedInfo = useMemo(
     () => getSelectedInfo(selectedMarker, showPoint, recommendData, expansion),
-    [selectedMarker, showPoint, recommendData, expansion],
+    [selectedMarker, showPoint, recommendData, expansion]
   );
 
   const { isLoaded } = useJsApiLoader({
@@ -339,32 +396,35 @@ export default function GoogleMapContainer() {
     setMapTilt((prev) => (prev === nextTilt ? prev : nextTilt));
   };
 
-  const handleCenterPosition = useCallback((lo) => {
-    const map = mapRef.current;
-    if (!map) return;
-    if (lo === '현재 위치' && !myGeoInfo?.point) return;
-    let lat;
-    let lon;
-    if (lo !== '현재 위치') {
-      const [filterGeo] = allDistrictInfo.filter((data) => data.location === lo);
-      if (!filterGeo) {
-        lat = DEFAULT_CENTER.lat;
-        lon = DEFAULT_CENTER.lng;
+  const handleCenterPosition = useCallback(
+    (lo) => {
+      const map = mapRef.current;
+      if (!map) return;
+      if (lo === '현재 위치' && !myGeoInfo?.point) return;
+      let lat;
+      let lon;
+      if (lo !== '현재 위치') {
+        const [filterGeo] = allDistrictInfo.filter((data) => data.location === lo);
+        if (!filterGeo) {
+          lat = DEFAULT_CENTER.lat;
+          lon = DEFAULT_CENTER.lng;
+        } else {
+          lat = filterGeo.lat;
+          lon = filterGeo.lon;
+        }
       } else {
-        lat = filterGeo.lat;
-        lon = filterGeo.lon;
+        lat = myGeoInfo.point.lat;
+        lon = myGeoInfo.point.lng;
       }
-    } else {
-      lat = myGeoInfo.point.lat;
-      lon = myGeoInfo.point.lng;
-    }
-    setSelectedMarker(null);
-    map.setZoom(15);
-    const nextTilt = isDesktop ? 45 : 0;
-    map.setTilt(nextTilt);
-    setMapTilt(nextTilt);
-    map.panTo({ lat: lat, lng: lon });
-  }, [allDistrictInfo, isDesktop, myGeoInfo, setSelectedMarker]);
+      setSelectedMarker(null);
+      map.setZoom(15);
+      const nextTilt = isDesktop ? 45 : 0;
+      map.setTilt(nextTilt);
+      setMapTilt(nextTilt);
+      map.panTo({ lat: lat, lng: lon });
+    },
+    [allDistrictInfo, isDesktop, myGeoInfo, setSelectedMarker]
+  );
 
   const getCenterPosition = () => {
     if (findStorageItem('locationAgree') && !myGeoInfo) return;
@@ -411,10 +471,13 @@ export default function GoogleMapContainer() {
 
   if (!isLoaded) {
     return (
-      <div className="w-full h-full min-h-[60vh] flex items-center justify-center bg-[#e8e8e8] rounded-lg" aria-hidden="true">
+      <div
+        className="w-full h-full min-h-[60vh] flex items-center justify-center bg-[#e8e8e8] rounded-lg"
+        aria-hidden="true"
+      >
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 border-4 border-[#f986bd] border-t-transparent rounded-full animate-spin" />
-          <p className="text-sm text-gray-500">지도 불러오는 중</p>
+          <p className="text-sm text-gray-500">{t('map.loadingMap')}</p>
         </div>
       </div>
     );
@@ -446,8 +509,17 @@ export default function GoogleMapContainer() {
         <MarkerClustererF options={{ minimumClusterSize: 3, gridSize: 56 }}>
           {(clusterer) => (
             <>
-              <ShowPointMarkers showPoint={showPoint} handleMarker={handleMarker} clusterer={clusterer} />
-              <RecommendMarkers expansion={expansion} recommendData={recommendData} handleMarker={handleMarker} clusterer={clusterer} />
+              <ShowPointMarkers
+                showPoint={showPoint}
+                handleMarker={handleMarker}
+                clusterer={clusterer}
+              />
+              <RecommendMarkers
+                expansion={expansion}
+                recommendData={recommendData}
+                handleMarker={handleMarker}
+                clusterer={clusterer}
+              />
             </>
           )}
         </MarkerClustererF>
@@ -479,7 +551,12 @@ export default function GoogleMapContainer() {
                   : undefined,
             }}
           >
-            <SelectedDetailContent key={selectedMarker} selectedInfo={selectedInfo} showContentImg={showContentImg} onImageLoad={setShowContentImg} />
+            <SelectedDetailContent
+              key={selectedMarker}
+              selectedInfo={selectedInfo}
+              showContentImg={showContentImg}
+              onImageLoad={setShowContentImg}
+            />
           </InfoWindow>
         )}
       </GoogleMap>

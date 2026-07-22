@@ -2,17 +2,19 @@
 'use client';
 
 import Image from 'next/image';
+import { useTranslation } from 'react-i18next';
 
 /**
  * 지도 동적 로딩 중 LCP 선점 + CLS 방지용 스켈레톤 UI
  * priority Image가 LCP 요소를 선점 (구글 맵 타일보다 먼저 렌더링)
  */
 export default function MapSkeleton() {
+  const { t } = useTranslation();
   return (
     <div className="w-full h-full min-h-[60vh] rounded-lg bg-[#e8e8e8] flex items-center justify-center overflow-hidden relative">
       <Image
         src="/assets/image/lcp-placeholder.jpeg"
-        alt="지도 로딩 중"
+        alt={t('map.skeletonAlt')}
         fill
         sizes="100vw"
         priority

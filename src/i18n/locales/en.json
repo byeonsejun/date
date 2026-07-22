@@ -16,7 +16,8 @@
     "consentDialogLabel": "Location permission notice",
     "agree": "Agree",
     "decline": "Decline",
-    "seoulOnlyToast": "This service is only available in Seoul. Please select a different area."
+    "seoulOnlyToast": "This service is only available in Seoul. Please select a different area.",
+    "blockedAlert": "You've blocked location access. Please allow it and try again."
   },
   "weather": {
     "today": "Today",
@@ -61,6 +62,13 @@
     "openInGoogleMapsBrowser": "View on Google Maps",
     "moreMarkersHint": "{{count}} more markers (check on native app)",
     "currentMarkerLabel": "Now",
+    "loadingMap": "Loading map",
+    "skeletonAlt": "Loading map",
+    "typeFilterLabel": "Map type filter",
+    "trailLabel": "Trail",
+    "levelLabel": "Difficulty",
+    "durationLabel": "Duration",
+    "courseGuideLabel": "Course",
     "category": {
       "all": "All",
       "park": "Parks",
@@ -78,6 +86,7 @@
   },
   "home": {
     "districtSelectTitle": "Select an area",
+    "districtSelectLabel": "Select date area",
     "weatherSectionTitle": "Weather for your selected area"
   }
 }
