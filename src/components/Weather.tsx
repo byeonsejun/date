@@ -97,19 +97,19 @@ export default function Weather() {
               <div className="flex flex-col">
                 <div className="w-full mb-2">
                   <ul
-                    className="flex gap-4 text-white text-base border-b border-[#060606] border-opacity-25 weather_tabs_scroll"
+                    className="flex gap-2 text-white text-sm border-b border-[#060606] border-opacity-25"
                     role="tablist"
                     aria-label={t('weather.periodSelectLabel')}
                   >
                     {day3.map((item) => (
-                      <li key={item.value} role="presentation" className="shrink-0">
+                      <li key={item.value} role="presentation">
                         <button
                           type="button"
                           role="tab"
                           aria-selected={selectWeather === item.value}
                           aria-controls={`weather-panel-${item.value}`}
                           id={`weather-tab-${item.value}`}
-                          className={`pb-1 whitespace-nowrap ${
+                          className={`pb-1 ${
                             selectWeather === item.value
                               ? 'border-b-2 border-white'
                               : 'opacity-50 hover:opacity-100'

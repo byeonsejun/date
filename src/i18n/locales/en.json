@@ -21,7 +21,7 @@
   "weather": {
     "today": "Today",
     "tomorrow": "Tomorrow",
-    "dayAfterTomorrow": "Day after tomorrow",
+    "dayAfterTomorrow": "In 2 days",
     "threeDaysLater": "In 3 days",
     "midnight": "Midnight",
     "noon": "Noon",
