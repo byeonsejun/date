@@ -32,7 +32,10 @@
     "foodFetchError": "맛집 정보를 불러오지 못했습니다.",
     "locationNeeded": "위치 필요",
     "loadingPlaces": "추천 데이터를 불러오는 중입니다.",
-    "todayPlacesTitle": "오늘 추천 데이트 장소"
+    "todayPlacesTitle": "오늘 추천 데이트 장소",
+    "tabSelectLabel": "추천/인기 선택",
+    "recommendDesc": "오늘 추천하는 데이트 장소입니다.",
+    "popularDesc": "오늘 많은 방문자가 다녀간 데이트 장소입니다."
   },
   "map": {
     "closePanel": "패널 닫기",
@@ -66,7 +69,8 @@
   },
   "poi": {
     "viewOnMapLabel": "{{title}} 위치 지도에서 보기",
-    "contactLabel": "문의: {{phone}}"
+    "contactLabel": "문의: {{phone}}",
+    "representativeImageAlt": "{{name}} 대표 이미지"
   },
   "home": {
     "districtSelectTitle": "지역 선택",

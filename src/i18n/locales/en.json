@@ -32,7 +32,10 @@
     "foodFetchError": "Couldn't load restaurant info.",
     "locationNeeded": "Location needed",
     "loadingPlaces": "Loading recommendations...",
-    "todayPlacesTitle": "Today's Recommended Date Spots"
+    "todayPlacesTitle": "Today's Recommended Date Spots",
+    "tabSelectLabel": "Recommended or popular",
+    "recommendDesc": "Today's recommended date spots.",
+    "popularDesc": "Date spots many people visited today."
   },
   "map": {
     "closePanel": "Close panel",
@@ -66,7 +69,8 @@
   },
   "poi": {
     "viewOnMapLabel": "View {{title}} on the map",
-    "contactLabel": "Contact: {{phone}}"
+    "contactLabel": "Contact: {{phone}}",
+    "representativeImageAlt": "{{name}} main image"
   },
   "home": {
     "districtSelectTitle": "Select an area",

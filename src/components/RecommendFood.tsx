@@ -5,12 +5,14 @@ import useRecommendStore from '@/stores/useRecommendStore';
 import useMapStore from '@/stores/useMapStore';
 import Image from 'next/image';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { IoRestaurantOutline } from 'react-icons/io5';
 import { PuffLoader } from 'react-spinners';
 import ReactStars from 'react-stars';
 import { useShallow } from 'zustand/react/shallow';
 
 export default function RecommendFood() {
+  const { t } = useTranslation();
   const { location, myGeoInfo, allDistrictInfo } = useLocationStore(
     useShallow((state) => ({
       location: state.location,
@@ -36,25 +38,28 @@ export default function RecommendFood() {
   const [currentLocationFlag, setCurrentLocationFlag] = useState(undefined);
   const recommendInitSkippedRef = useRef(false);
 
-  const getRecommendRestaurants = useCallback(async (lo, allIf, myIf) => {
-    setLoading(true);
-    let currentGeo;
-    if (lo === '현재 위치') {
-      currentGeo = {
-        location: '현재 위치',
-        lat: myIf.point.lat,
-        lon: myIf.point.lng,
-      };
-    } else {
-      [currentGeo] = allIf.filter((data) => data.location === lo);
-    }
+  const getRecommendRestaurants = useCallback(
+    async (lo, allIf, myIf) => {
+      setLoading(true);
+      let currentGeo;
+      if (lo === '현재 위치') {
+        currentGeo = {
+          location: '현재 위치',
+          lat: myIf.point.lat,
+          lon: myIf.point.lng,
+        };
+      } else {
+        [currentGeo] = allIf.filter((data) => data.location === lo);
+      }
 
-    const getRestaurantsApi = await fetch(`/api/restaurants?lat=${currentGeo.lat}&lon=${currentGeo.lon}`).then((res) =>
-      res.json()
-    );
-    setRecommendData(getRestaurantsApi);
-    setLoading(false);
-  }, [setRecommendData]);
+      const getRestaurantsApi = await fetch(
+        `/api/restaurants?lat=${currentGeo.lat}&lon=${currentGeo.lon}`
+      ).then((res) => res.json());
+      setRecommendData(getRestaurantsApi);
+      setLoading(false);
+    },
+    [setRecommendData]
+  );
 
   useEffect(() => {
     if (findStorageItem('locationAgree') && !myGeoInfo) return;
@@ -68,7 +73,14 @@ export default function RecommendFood() {
     if (currentLocationFlag === location) return;
     getRecommendRestaurants(location, allDistrictInfo, myGeoInfo);
     setCurrentLocationFlag(location);
-  }, [myGeoInfo, location, allDistrictInfo, expansion, currentLocationFlag, getRecommendRestaurants]);
+  }, [
+    myGeoInfo,
+    location,
+    allDistrictInfo,
+    expansion,
+    currentLocationFlag,
+    getRecommendRestaurants,
+  ]);
 
   return (
     <div
@@ -79,7 +91,7 @@ export default function RecommendFood() {
     >
       {expansion ? (
         <div className="w-full h-full p-2 pr-0 overflow-hidden pb-8 relative">
-          <h3 className="text-base pb-2">추천식당 리스트 Top 5</h3>
+          <h3 className="text-base pb-2">{t('recommend.foodListTitle')}</h3>
           <button
             className="w-6 h-6 border border-[#ededed] rounded-lg text-xs hover:bg-slate-100 hover:font-bold p absolute top-2 right-2"
             onClick={() => setExpansion(false)}
@@ -92,7 +104,12 @@ export default function RecommendFood() {
                 color="#12c1ed"
                 loading={loading}
                 size={50}
-                cssOverride={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }}
+                cssOverride={{
+                  position: 'absolute',
+                  left: '50%',
+                  top: '50%',
+                  transform: 'translate(-50%, -50%)',
+                }}
               />
             ) : (
               <ul className="flex flex-col">
@@ -119,13 +136,13 @@ export default function RecommendFood() {
                           <span className="text-xs">{`(${item.userRatingsTotal})`}</span>
                         </div>
                         <p className="text-xs">
-                          {item.openNow ? '영업중' : '영업 종료'}
+                          {item.openNow ? t('common.openNow') : t('common.closed')}
                         </p>
                       </div>
                       <div className="max-w-[84px] min-w-[84px] w-[84px] h-full relative mr-2">
                         <Image
                           src={item.imgSrc}
-                          alt={`${item.name} 대표 이미지`}
+                          alt={t('poi.representativeImageAlt', { name: item.name })}
                           sizes="84px"
                           fill
                           className="absolute object-cover cursor-pointer"
@@ -145,7 +162,7 @@ export default function RecommendFood() {
           ${expansion && 'invisible'}
         `}
           onClick={() => setExpansion(true)}
-          title="추천 식당 보기"
+          title={t('recommend.viewFoodButton')}
         >
           <IoRestaurantOutline className="w-full h-full p-2" />
         </div>
