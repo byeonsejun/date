@@ -17,7 +17,8 @@
     "agree": "Agree",
     "decline": "Decline",
     "seoulOnlyToast": "This service is only available in Seoul. Please select a different area.",
-    "blockedAlert": "You've blocked location access. Please allow it and try again."
+    "blockedAlert": "You've blocked location access. Please allow it and try again.",
+    "dataRequestError": "Failed to request data. Please press the refresh button."
   },
   "weather": {
     "today": "Today",

@@ -1,4 +1,5 @@
 // @ts-nocheck
+import i18n from '@/i18n/config';
 import { createStorageItem, removeStorageItem } from '@/utils/util';
 import { fromUnixTime } from 'date-fns';
 import format from 'date-fns/format';
@@ -114,7 +115,8 @@ export const getUserGeoInfo = async (
           createStorageItem('locationAgree', 'true');
         })
         .catch((err) => {
-          alert('데이터요청에 실패하였습니다. 새로고침 버튼을 눌러주세요.');
+          const t = i18n.getFixedT(i18n.language);
+          alert(t('location.dataRequestError'));
           throw new Error(err);
         });
     },
