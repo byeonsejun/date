@@ -23,6 +23,10 @@
     "tomorrow": "내일",
     "dayAfterTomorrow": "모레",
     "threeDaysLater": "글피",
+    "midnight": "자정",
+    "noon": "정오",
+    "periodSelectLabel": "날씨 기간 선택",
+    "iconAlt": "{{desc}} 아이콘",
     "loading": "날씨 불러오는 중...",
     "loadError": "날씨 정보를 불러오지 못했습니다. 네트워크 상태와 서버(EXPO_PUBLIC_API_BASE_URL) 연결을 확인해 주세요."
   },

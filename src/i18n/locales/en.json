@@ -23,6 +23,10 @@
     "tomorrow": "Tomorrow",
     "dayAfterTomorrow": "Day after tomorrow",
     "threeDaysLater": "In 3 days",
+    "midnight": "Midnight",
+    "noon": "Noon",
+    "periodSelectLabel": "Select weather period",
+    "iconAlt": "{{desc}} icon",
     "loading": "Loading weather...",
     "loadError": "Couldn't load weather info. Please check your network and server (EXPO_PUBLIC_API_BASE_URL) connection."
   },
