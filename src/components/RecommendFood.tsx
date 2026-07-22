@@ -91,13 +91,15 @@ export default function RecommendFood() {
     >
       {expansion ? (
         <div className="w-full h-full p-2 pr-0 overflow-hidden pb-8 relative">
-          <h3 className="text-base pb-2">{t('recommend.foodListTitle')}</h3>
-          <button
-            className="w-6 h-6 border border-[#ededed] rounded-lg text-xs hover:bg-slate-100 hover:font-bold p absolute top-2 right-2"
-            onClick={() => setExpansion(false)}
-          >
-            X
-          </button>
+          <div className="flex items-start justify-between gap-2 pr-2 pb-2">
+            <h3 className="text-base flex-1 min-w-0 break-keep">{t('recommend.foodListTitle')}</h3>
+            <button
+              className="w-6 h-6 shrink-0 border border-[#ededed] rounded-lg text-xs hover:bg-slate-100 hover:font-bold"
+              onClick={() => setExpansion(false)}
+            >
+              X
+            </button>
+          </div>
           <div className="border-t border-[#ededed] w-full h-full overflow-y-auto">
             {loading ? (
               <PuffLoader
