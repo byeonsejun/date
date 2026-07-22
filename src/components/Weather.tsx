@@ -41,7 +41,7 @@ export default function Weather() {
   const locationLabel = district ? getDistrictLabel(district, i18n.language) : location;
 
   return (
-    <div className="border border-[#ededed] rounded-lg w-full h-[280px] mb-4 p-1 relative overflow-hidden">
+    <div className="border border-[#ededed] rounded-lg w-full min-h-[280px] shrink-0 mb-4 p-1 relative overflow-hidden flex">
       <Image
         src="/assets/image/wbg.jpg"
         alt=""
@@ -51,7 +51,7 @@ export default function Weather() {
         className="object-cover -z-10"
         priority
       />
-      <div className="w-full h-full bg-neutral-900/20 backdrop-blur-sm rounded-lg py-2 px-3 cursor-default relative z-0">
+      <div className="w-full bg-neutral-900/20 backdrop-blur-sm rounded-lg py-2 px-3 cursor-default relative z-0">
         {loading ? (
           <PuffLoader
             color="#f3eaf2"
