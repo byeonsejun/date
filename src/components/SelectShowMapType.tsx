@@ -5,6 +5,7 @@ import useMapStore from '@/stores/useMapStore';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { useTranslation } from 'react-i18next';
+import { getCategoryLabel } from '@/utils/label';
 
 const selectType = [
   { name: '전체', class: 'select_color_all' },
@@ -14,7 +15,8 @@ const selectType = [
 ];
 
 export default function SelectShowMapType() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const language = i18n.language;
   const { location, myGeoInfo, parkInfo, dodreamgilInfo, culturalSpaceInfo } = useLocationStore(
     useShallow((state) => ({
       location: state.location,
@@ -82,7 +84,7 @@ export default function SelectShowMapType() {
             } p-2 rounded-lg`}
             onClick={() => setSelectedType(item.name)}
           >
-            {item.name}
+            {getCategoryLabel(item.name, language)}
           </button>
         </li>
       ))}
@@ -125,6 +127,7 @@ const mapDodreamgilRecord = (data) => ({
   lat: data.latitude,
   lng: data.longitude,
   title: data.CPI_NAME,
+  titleEn: data.CPI_NAME_en ?? undefined,
   contentType: data.COURSE_CATEGORY_NM,
   desc: data.CONTENT ?? undefined,
   img: undefined,
@@ -150,6 +153,7 @@ export const getFilterInfoData = (type, myLc, data, data2, data3) => {
           lat: data.X_COORD,
           lng: data.Y_COORD,
           title: data.FAC_NAME,
+          titleEn: data.FAC_NAME_en ?? undefined,
           contentType: data.SUBJCODE ?? undefined,
           desc: data.FAC_DESC ?? undefined,
           img: data.MAIN_IMG ?? undefined,
@@ -172,6 +176,7 @@ export const getFilterInfoData = (type, myLc, data, data2, data3) => {
           lat: data.latitude,
           lng: data.longitude,
           title: data.p_park,
+          titleEn: data.p_park_en ?? undefined,
           contentType: '공원',
           desc: data.p_list_content ?? undefined,
           img: data.p_img ?? undefined,
@@ -197,6 +202,7 @@ export const getFilterInfoData = (type, myLc, data, data2, data3) => {
           lat: data.X_COORD,
           lng: data.Y_COORD,
           title: data.FAC_NAME,
+          titleEn: data.FAC_NAME_en ?? undefined,
           contentType: data.SUBJCODE ?? undefined,
           desc: data.FAC_DESC ?? undefined,
           img: data.MAIN_IMG ?? undefined,
@@ -217,6 +223,7 @@ export const getFilterInfoData = (type, myLc, data, data2, data3) => {
           lat: data.latitude,
           lng: data.longitude,
           title: data.p_park,
+          titleEn: data.p_park_en ?? undefined,
           contentType: '공원',
           desc: data.p_list_content ?? undefined,
           img: data.p_img ?? undefined,
@@ -241,6 +248,7 @@ export const getFilterInfoData = (type, myLc, data, data2, data3) => {
         lat: randomCulResult.X_COORD,
         lng: randomCulResult.Y_COORD,
         title: randomCulResult.FAC_NAME,
+        titleEn: randomCulResult.FAC_NAME_en ?? undefined,
         contentType: randomCulResult.SUBJCODE ?? undefined,
         desc: randomCulResult.FAC_DESC ?? undefined,
         img: randomCulResult.MAIN_IMG ?? undefined,
@@ -261,6 +269,7 @@ export const getFilterInfoData = (type, myLc, data, data2, data3) => {
         lat: randomParkResult.latitude,
         lng: randomParkResult.longitude,
         title: randomParkResult.p_park,
+        titleEn: randomParkResult.p_park_en ?? undefined,
         contentType: '공원',
         desc: randomParkResult.p_list_content ?? undefined,
         img: randomParkResult.p_img ?? undefined,

@@ -7,6 +7,7 @@ import format from 'date-fns/format';
 import useWeather from '@/hooks/useWeather';
 import PuffLoader from 'react-spinners/PuffLoader';
 import { useTranslation } from 'react-i18next';
+import { getDistrictLabel } from '@/utils/label';
 
 const date = new Date();
 
@@ -29,10 +30,15 @@ const translatorToKor = (lang) => {
 };
 
 export default function Weather() {
-  const { t } = useTranslation();
-  const { showWeather, selectWeather, setSelectWeather, location, loading } = useWeather();
+  const { t, i18n } = useTranslation();
+  const { showWeather, selectWeather, setSelectWeather, location, allDistrictInfo, loading } =
+    useWeather();
   const todayWeather = showWeather.today;
   const forecastWeather = showWeather.forecast;
+
+  // 표시 시점에만 구 이름 변환 — location(로직용 KO 원본값)은 그대로 유지 (RN WeatherPanel 동일)
+  const district = allDistrictInfo?.find((item) => item.location === location);
+  const locationLabel = district ? getDistrictLabel(district, i18n.language) : location;
 
   return (
     <div className="border border-[#ededed] rounded-lg w-full h-[280px] mb-4 p-1 relative overflow-hidden">
@@ -64,7 +70,7 @@ export default function Weather() {
               {todayWeather && (
                 <>
                   <div>
-                    <p className="text-2xl text-white">{location}</p>
+                    <p className="text-2xl text-white">{locationLabel}</p>
                     <p className="text-xs text-white mb-2">
                       {format(date, 'MMMM')} {getCurrentTime('day')}, {getCurrentTime('year')}
                     </p>

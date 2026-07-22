@@ -6,9 +6,11 @@ import { findStorageItem } from '@/utils/util';
 import useLocationStore from '@/stores/useLocationStore';
 import { useShallow } from 'zustand/react/shallow';
 import { useTranslation } from 'react-i18next';
+import { getDistrictLabel } from '@/utils/label';
 
 export default function SelectFilter() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const language = i18n.language;
   const { allDistrictInfo, setLocation, location } = useLocationStore(
     useShallow((state) => ({
       allDistrictInfo: state.allDistrictInfo,
@@ -46,7 +48,7 @@ export default function SelectFilter() {
             {allDistrictInfo.map((item) => {
               return (
                 <option key={item.location} value={item.location} lat={item.lat} lon={item.lon}>
-                  {item.location}
+                  {getDistrictLabel(item, language)}
                 </option>
               );
             })}

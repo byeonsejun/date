@@ -24,6 +24,7 @@ import ReactStars from 'react-stars';
 import ModalPortal from './ui/ModalPortal';
 import TextInfoModal from './ui/TextInfoModal';
 import { useTranslation } from 'react-i18next';
+import { getPoiDisplayTitle } from '@/utils/label';
 
 const lib = ['places'];
 const DEFAULT_CENTER = { lat: 37.560825, lng: 126.995069 };
@@ -51,15 +52,30 @@ const mapOptionsBase = {
   },
 };
 
-function getHoverInfo(overMarker, myGeoInfo, showPoint, recommendData, expansion) {
+function getHoverInfo(
+  overMarker,
+  myGeoInfo,
+  showPoint,
+  recommendData,
+  expansion,
+  language,
+  currentLocationLabel
+) {
   if (overMarker == null) return null;
   if (myGeoInfo && myGeoInfo.point && myGeoInfo.point.lat === overMarker) {
-    return { position: { lat: myGeoInfo.point.lat, lng: myGeoInfo.point.lng }, title: '현재 위치' };
+    // 표시만 변환 — 위치 판별은 좌표 비교이지 title이 아니다
+    return {
+      position: { lat: myGeoInfo.point.lat, lng: myGeoInfo.point.lng },
+      title: currentLocationLabel,
+    };
   }
   if (showPoint && Array.isArray(showPoint)) {
     const found = showPoint.find((d) => Number(d.lat) === Number(overMarker));
     if (found)
-      return { position: { lat: Number(found.lat), lng: Number(found.lng) }, title: found.title };
+      return {
+        position: { lat: Number(found.lat), lng: Number(found.lng) },
+        title: getPoiDisplayTitle(found, language),
+      };
   }
   if (expansion && recommendData && Array.isArray(recommendData)) {
     const found = recommendData.find((d) => d.lat === overMarker);
@@ -96,7 +112,7 @@ const SelectedDetailContent = React.memo(function SelectedDetailContent({
   showContentImg,
   onImageLoad,
 }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   if (!selectedInfo) return null;
   if (selectedInfo.type === 'recommend') {
     const { name, imgSrc, openNow, formattedAddress, rating, userRatingsTotal } = selectedInfo.data;
@@ -139,7 +155,6 @@ const SelectedDetailContent = React.memo(function SelectedDetailContent({
     );
   }
   const {
-    title,
     img,
     phone,
     contentType,
@@ -153,6 +168,8 @@ const SelectedDetailContent = React.memo(function SelectedDetailContent({
     desc,
     url,
   } = selectedInfo.data;
+  // 표시만 변환 — 데이터 원본 title(KO)은 그대로 유지
+  const displayTitle = getPoiDisplayTitle(selectedInfo.data, i18n.language);
   return (
     <div
       id="select_pop"
@@ -177,7 +194,7 @@ const SelectedDetailContent = React.memo(function SelectedDetailContent({
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={img}
-            alt={t('poi.representativeImageAlt', { name: title })}
+            alt={t('poi.representativeImageAlt', { name: displayTitle })}
             className="absolute inset-0 w-full h-full object-cover z-[2]"
             onLoad={() => onImageLoad(img)}
             onError={(e) => {
@@ -187,13 +204,13 @@ const SelectedDetailContent = React.memo(function SelectedDetailContent({
             }}
           />
           <h3 className="absolute bottom-2 left-2 text-xs font-bold text-white p-2 bg-black bg-opacity-50 z-[3]">
-            {title}
+            {displayTitle}
           </h3>
         </div>
       )}
       <div className="flex flex-col gap-1 px-4">
         <h3 className="text-xs font-bold break-keep">
-          {title} {phone && <span className="text-xs font-normal"> / {phone} </span>}{' '}
+          {displayTitle} {phone && <span className="text-xs font-normal"> / {phone} </span>}{' '}
           {contentType && <span className="text-xs">{contentType}</span>}
         </h3>
         {courseName && <p className="text-xs">{courseName}</p>}
@@ -241,12 +258,13 @@ const SelectedDetailContent = React.memo(function SelectedDetailContent({
 const CurrentLocationMarker = React.memo(function CurrentLocationMarker({
   myGeoInfo,
   handleMarker,
+  currentLocationLabel,
 }) {
   if (!myGeoInfo) return null;
   return (
     <MarkerF
       position={{ lat: myGeoInfo.point.lat, lng: myGeoInfo.point.lng }}
-      title="현재 위치"
+      title={currentLocationLabel}
       onMouseOver={() => handleMarker('in', myGeoInfo.point.lat)}
       onMouseOut={() => handleMarker('out')}
       options={{
@@ -266,16 +284,17 @@ const ShowPointMarkers = React.memo(function ShowPointMarkers({
   showPoint,
   handleMarker,
   clusterer,
+  language,
 }) {
   if (!showPoint) return null;
   return showPoint.map((data, idx) => {
-    const { type, lat, lng, title } = data;
+    const { type, lat, lng } = data;
     return (
       <MarkerF
         key={`${lat}-${idx}`}
         clusterer={clusterer}
         position={{ lat: Number(lat), lng: Number(lng) }}
-        title={title}
+        title={getPoiDisplayTitle(data, language)}
         onMouseOver={() => handleMarker('in', lat)}
         onMouseOut={() => handleMarker('out')}
         onClick={() => handleMarker('click', lat)}
@@ -327,7 +346,9 @@ const RecommendMarkers = React.memo(function RecommendMarkers({
 });
 
 export default function GoogleMapContainer() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const language = i18n.language;
+  const currentLocationLabel = t('map.currentLocationTitle');
   const mapRef = useRef(null);
   const { location, allDistrictInfo, myGeoInfo } = useLocationStore(
     useShallow((state) => ({
@@ -367,8 +388,17 @@ export default function GoogleMapContainer() {
   );
 
   const hoverInfo = useMemo(
-    () => getHoverInfo(overMarker, myGeoInfo, showPoint, recommendData, expansion),
-    [overMarker, myGeoInfo, showPoint, recommendData, expansion]
+    () =>
+      getHoverInfo(
+        overMarker,
+        myGeoInfo,
+        showPoint,
+        recommendData,
+        expansion,
+        language,
+        currentLocationLabel
+      ),
+    [overMarker, myGeoInfo, showPoint, recommendData, expansion, language, currentLocationLabel]
   );
   const selectedInfo = useMemo(
     () => getSelectedInfo(selectedMarker, showPoint, recommendData, expansion),
@@ -505,7 +535,11 @@ export default function GoogleMapContainer() {
             <TextInfoModal onClose={() => setOpenModal(false)} />
           </ModalPortal>
         )}
-        <CurrentLocationMarker myGeoInfo={myGeoInfo} handleMarker={handleMarker} />
+        <CurrentLocationMarker
+          myGeoInfo={myGeoInfo}
+          handleMarker={handleMarker}
+          currentLocationLabel={currentLocationLabel}
+        />
         <MarkerClustererF options={{ minimumClusterSize: 3, gridSize: 56 }}>
           {(clusterer) => (
             <>
@@ -513,6 +547,7 @@ export default function GoogleMapContainer() {
                 showPoint={showPoint}
                 handleMarker={handleMarker}
                 clusterer={clusterer}
+                language={language}
               />
               <RecommendMarkers
                 expansion={expansion}
