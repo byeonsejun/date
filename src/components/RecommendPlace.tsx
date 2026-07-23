@@ -58,7 +58,7 @@ export default function RecommendPlace() {
   }, [location, culturalSpaceInfo, dodreamgilInfo, parkInfo, myGeoInfo]);
 
   return (
-    <div className="border border-[#ededed] w-full h-[410px] overflow-hidden rounded-lg p-2 flex flex-col gap-2">
+    <div className="border border-[#ededed] w-full min-h-[410px] rounded-lg p-2 flex flex-col gap-2">
       <div className="flex">
         <ul className="flex gap-2" role="tablist" aria-label={t('recommend.tabSelectLabel')}>
           {selectType.map((type) => (
