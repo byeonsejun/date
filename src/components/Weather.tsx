@@ -6,14 +6,17 @@ import Image from 'next/image';
 import format from 'date-fns/format';
 import useWeather from '@/hooks/useWeather';
 import PuffLoader from 'react-spinners/PuffLoader';
+import { useTranslation } from 'react-i18next';
+import { getDistrictLabel } from '@/utils/label';
 
 const date = new Date();
 
+// title은 t()로 번역, value(setSelectWeather 로직 키)는 그대로 유지 (RN WeatherPanel과 동일)
 const day3 = [
-  { title: '오늘', value: 0 },
-  { title: '내일', value: 1 },
-  { title: '모레', value: 2 },
-  { title: '글피', value: 3 },
+  { titleKey: 'weather.today', value: 0 },
+  { titleKey: 'weather.tomorrow', value: 1 },
+  { titleKey: 'weather.dayAfterTomorrow', value: 2 },
+  { titleKey: 'weather.threeDaysLater', value: 3 },
 ];
 
 const translatorToKor = (lang) => {
@@ -27,12 +30,18 @@ const translatorToKor = (lang) => {
 };
 
 export default function Weather() {
-  const { showWeather, selectWeather, setSelectWeather, location, loading } = useWeather();
+  const { t, i18n } = useTranslation();
+  const { showWeather, selectWeather, setSelectWeather, location, allDistrictInfo, loading } =
+    useWeather();
   const todayWeather = showWeather.today;
   const forecastWeather = showWeather.forecast;
 
+  // 표시 시점에만 구 이름 변환 — location(로직용 KO 원본값)은 그대로 유지 (RN WeatherPanel 동일)
+  const district = allDistrictInfo?.find((item) => item.location === location);
+  const locationLabel = district ? getDistrictLabel(district, i18n.language) : location;
+
   return (
-    <div className="border border-[#ededed] rounded-lg w-full h-[280px] mb-4 p-1 relative overflow-hidden">
+    <div className="border border-[#ededed] rounded-lg w-full min-h-[280px] shrink-0 mb-4 p-1 relative overflow-hidden flex">
       <Image
         src="/assets/image/wbg.jpg"
         alt=""
@@ -42,21 +51,26 @@ export default function Weather() {
         className="object-cover -z-10"
         priority
       />
-      <div className="w-full h-full bg-neutral-900/20 backdrop-blur-sm rounded-lg py-2 px-3 cursor-default relative z-0">
+      <div className="w-full bg-neutral-900/20 backdrop-blur-sm rounded-lg py-2 px-3 cursor-default relative z-0">
         {loading ? (
           <PuffLoader
             color="#f3eaf2"
             loading={loading}
             size={50}
-            cssOverride={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }}
+            cssOverride={{
+              position: 'absolute',
+              left: '50%',
+              top: '50%',
+              transform: 'translate(-50%, -50%)',
+            }}
           />
         ) : (
           <>
             <div className="flex justify-between mb-2">
               {todayWeather && (
                 <>
-                  <div>
-                    <p className="text-2xl text-white">{location}</p>
+                  <div className="flex-1 min-w-0 overflow-hidden">
+                    <p className="text-2xl text-white break-words">{locationLabel}</p>
                     <p className="text-xs text-white mb-2">
                       {format(date, 'MMMM')} {getCurrentTime('day')}, {getCurrentTime('year')}
                     </p>
@@ -65,7 +79,7 @@ export default function Weather() {
                         <Image
                           className="scale-150"
                           src={`https://openweathermap.org/img/wn/${todayWeather.weather[0].icon}@2x.png`}
-                          alt={`${todayWeather.weather[0].description} 아이콘`}
+                          alt={t('weather.iconAlt', { desc: todayWeather.weather[0].description })}
                           fill
                           sizes="50px"
                           priority={true}
@@ -76,7 +90,7 @@ export default function Weather() {
                       </span>
                     </div>
                   </div>
-                  <div>
+                  <div className="shrink-0">
                     <p className="text-white text-[72px] mt-3 leading-none text-li tracki tracking-[-0.25rem] flex">
                       {todayWeather && getInteger(todayWeather.main.temp)}
                       <span className="text-5xl">°</span>
@@ -89,12 +103,12 @@ export default function Weather() {
               <div className="flex flex-col">
                 <div className="w-full mb-2">
                   <ul
-                    className="flex gap-4 text-white text-base border-b border-[#060606] border-opacity-25"
+                    className="flex gap-2 text-white text-sm border-b border-[#060606] border-opacity-25"
                     role="tablist"
-                    aria-label="날씨 기간 선택"
+                    aria-label={t('weather.periodSelectLabel')}
                   >
                     {day3.map((item) => (
-                      <li key={item.title} role="presentation">
+                      <li key={item.value} role="presentation">
                         <button
                           type="button"
                           role="tab"
@@ -102,11 +116,13 @@ export default function Weather() {
                           aria-controls={`weather-panel-${item.value}`}
                           id={`weather-tab-${item.value}`}
                           className={`pb-1 ${
-                            selectWeather === item.value ? 'border-b-2 border-white' : 'opacity-50 hover:opacity-100'
+                            selectWeather === item.value
+                              ? 'border-b-2 border-white'
+                              : 'opacity-50 hover:opacity-100'
                           }`}
                           onClick={() => setSelectWeather(item.value)}
                         >
-                          {item.title}
+                          {t(item.titleKey)}
                         </button>
                       </li>
                     ))}
@@ -127,7 +143,9 @@ export default function Weather() {
                             <Image
                               className="scale-150"
                               src={`https://openweathermap.org/img/wn/${todayWeather.weather[0].icon}@2x.png`}
-                              alt={`${todayWeather.weather[0].description} 아이콘`}
+                              alt={t('weather.iconAlt', {
+                                desc: todayWeather.weather[0].description,
+                              })}
                               fill
                               sizes="25px"
                               priority={true}
@@ -145,8 +163,10 @@ export default function Weather() {
                         const nowDate = fromUnixTimeToG(item.dt);
                         const date = new Date(nowDate);
                         let formattedDate = format(date, 'ha');
-                        formattedDate = formattedDate === '12AM' ? '자정' : formattedDate; // 자정
-                        formattedDate = formattedDate === '12PM' ? '정오' : formattedDate; // 정오
+                        formattedDate =
+                          formattedDate === '12AM' ? t('weather.midnight') : formattedDate; // 자정
+                        formattedDate =
+                          formattedDate === '12PM' ? t('weather.noon') : formattedDate; // 정오
                         if (item.day_value === selectWeather)
                           return (
                             <div className="flex flex-col items-center" key={item.dt}>
@@ -155,7 +175,7 @@ export default function Weather() {
                                 <Image
                                   className="scale-150"
                                   src={`https://openweathermap.org/img/wn/${item.weather[0].icon}.png`}
-                                  alt={`${item.weather[0].description} 아이콘`}
+                                  alt={t('weather.iconAlt', { desc: item.weather[0].description })}
                                   fill
                                   sizes="25px"
                                 />

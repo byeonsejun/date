@@ -5,8 +5,11 @@ import useLocationStore from '@/stores/useLocationStore';
 import useWeatherStore from '@/stores/useWeatherStore';
 import useUiStore from '@/stores/useUiStore';
 import { useShallow } from 'zustand/react/shallow';
+import { useTranslation } from 'react-i18next';
 
 export default function useWeather() {
+  const { i18n } = useTranslation();
+  const language = i18n.language; // 언어 토글 시 아래 fetch 콜백 identity가 바뀌어 재요청됨
   const { allDistrictInfo, location, setLocation, myGeoInfo, setMyGeoInfo } = useLocationStore(
     useShallow((state) => ({
       allDistrictInfo: state.allDistrictInfo,
@@ -43,34 +46,48 @@ export default function useWeather() {
     [setLocation, setShowWeather]
   );
 
-  const getRealTimeLocation = useCallback(async (coords) => {
-    setLoading(true);
-    try {
-      const todayWeather = await getRealTimeWeather(coords.latitude, coords.longitude);
-      const futureWeather = await getForecastWeather(coords.latitude, coords.longitude);
-      setMyLocalWeather({ today: todayWeather, forecast: futureWeather });
-      showCurrentWeather(todayWeather, futureWeather, '현재 위치', true);
-    } catch (error) {
-      console.error('[useWeather] failed to load current location weather:', error);
-    } finally {
-      setLoading(false);
-    }
-  }, [setMyLocalWeather, showCurrentWeather]);
+  const getRealTimeLocation = useCallback(
+    async (coords) => {
+      setLoading(true);
+      try {
+        const todayWeather = await getRealTimeWeather(coords.latitude, coords.longitude, language);
+        const futureWeather = await getForecastWeather(coords.latitude, coords.longitude, language);
+        setMyLocalWeather({ today: todayWeather, forecast: futureWeather });
+        showCurrentWeather(todayWeather, futureWeather, '현재 위치', true);
+      } catch (error) {
+        console.error('[useWeather] failed to load current location weather:', error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [setMyLocalWeather, showCurrentWeather, language]
+  );
   // 전달받은 파라미터 이름 날씨값 받아오기 함수
-  const getSelectLocation = useCallback(async (lo) => {
-    setLoading(true);
-    try {
-      const [getLocationInfo] = allDistrictInfo.filter((item) => item.location === lo);
-      if (!getLocationInfo) return;
-      const todayWeather = await getRealTimeWeather(getLocationInfo.lat, getLocationInfo.lon);
-      const futureWeather = await getForecastWeather(getLocationInfo.lat, getLocationInfo.lon);
-      showCurrentWeather(todayWeather, futureWeather, lo);
-    } catch (error) {
-      console.error(`[useWeather] failed to load weather for ${lo}:`, error);
-    } finally {
-      setLoading(false);
-    }
-  }, [allDistrictInfo, showCurrentWeather]);
+  const getSelectLocation = useCallback(
+    async (lo) => {
+      setLoading(true);
+      try {
+        const [getLocationInfo] = allDistrictInfo.filter((item) => item.location === lo);
+        if (!getLocationInfo) return;
+        const todayWeather = await getRealTimeWeather(
+          getLocationInfo.lat,
+          getLocationInfo.lon,
+          language
+        );
+        const futureWeather = await getForecastWeather(
+          getLocationInfo.lat,
+          getLocationInfo.lon,
+          language
+        );
+        showCurrentWeather(todayWeather, futureWeather, lo);
+      } catch (error) {
+        console.error(`[useWeather] failed to load weather for ${lo}:`, error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [allDistrictInfo, showCurrentWeather, language]
+  );
 
   // 초기 로드: 선택된 구(기본 중구) 날씨만 표시, 위치 권한 요청하지 않음
   useEffect(() => {
@@ -143,6 +160,7 @@ export default function useWeather() {
     selectWeather,
     setSelectWeather,
     location,
+    allDistrictInfo,
     loading,
   };
 }

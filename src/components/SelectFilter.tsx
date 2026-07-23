@@ -5,8 +5,12 @@ import BaseSelect from './ui/BaseSelect';
 import { findStorageItem } from '@/utils/util';
 import useLocationStore from '@/stores/useLocationStore';
 import { useShallow } from 'zustand/react/shallow';
+import { useTranslation } from 'react-i18next';
+import { getDistrictLabel } from '@/utils/label';
 
 export default function SelectFilter() {
+  const { t, i18n } = useTranslation();
+  const language = i18n.language;
   const { allDistrictInfo, setLocation, location } = useLocationStore(
     useShallow((state) => ({
       allDistrictInfo: state.allDistrictInfo,
@@ -26,7 +30,7 @@ export default function SelectFilter() {
       !findStorageItem('locationAgree') &&
       !findStorageItem('outside')
     ) {
-      alert('위치정보 제공을 차단하셨습니다. 허용하신 후 이용해 주세요.');
+      alert(t('location.blockedAlert'));
       return;
     }
     label === 'location' && setLocation(value);
@@ -37,14 +41,14 @@ export default function SelectFilter() {
         <div className="w-full">
           <BaseSelect
             id="location-select"
-            label="데이트 지역 선택"
+            label={t('home.districtSelectLabel')}
             onChange={handleSearch('location')}
             selected={location}
           >
             {allDistrictInfo.map((item) => {
               return (
                 <option key={item.location} value={item.location} lat={item.lat} lon={item.lon}>
-                  {item.location}
+                  {getDistrictLabel(item, language)}
                 </option>
               );
             })}

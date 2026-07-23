@@ -2,6 +2,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { createStorageItem, findStorageItem } from '@/utils/util';
 import useLocationStore from '@/stores/useLocationStore';
 import ModalPortal from './ui/ModalPortal';
@@ -10,6 +11,7 @@ import FocusTrap from 'focus-trap-react';
 const STORAGE_KEY = 'locationConsentAsked';
 
 export default function LocationConsentModal() {
+  const { t } = useTranslation();
   const setLocation = useLocationStore((s) => s.setLocation);
   const [show, setShow] = useState(false);
 
@@ -39,12 +41,10 @@ export default function LocationConsentModal() {
             className="bg-white rounded-lg shadow-xl max-w-sm mx-4 p-6 flex flex-col gap-4"
             role="dialog"
             aria-modal="true"
-            aria-label="위치 정보 동의 안내"
+            aria-label={t('location.consentDialogLabel')}
           >
-            <p className="text-gray-900 text-center font-normal break-keep">
-              서울, 너와 함께는 현재 계신 곳을 중심으로 맞춤형 날씨와 데이트 장소를 추천해 드려요! 📍
-              <br />
-              (본 서비스는 서울 지역 한정으로 제공됩니다.)
+            <p className="text-gray-900 text-center font-normal break-keep whitespace-pre-line">
+              {t('location.consentMessage')}
             </p>
             <div className="flex gap-3">
               <button
@@ -52,14 +52,14 @@ export default function LocationConsentModal() {
                 onClick={handleDecline}
                 className="flex-1 py-2.5 px-4 rounded border border-gray-300 text-gray-700 hover:bg-gray-50 font-normal"
               >
-                거부
+                {t('location.decline')}
               </button>
               <button
                 type="button"
                 onClick={handleAgree}
                 className="flex-1 py-2.5 px-4 rounded bg-[#f986bd] text-black hover:opacity-90 font-normal"
               >
-                동의
+                {t('location.agree')}
               </button>
             </div>
           </div>

@@ -2,12 +2,14 @@
 'use client';
 
 import { useEffect, useRef, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import useUiStore from '@/stores/useUiStore';
 import CloseIcon from './ui/CloseIcon';
 
 const AUTO_DISMISS_MS = 5000;
 
 export default function SeoulOnlyToast() {
+  const { t } = useTranslation();
   const visible = useUiStore((s) => s.seoulOnlyToastVisible);
   const setSeoulOnlyToastVisible = useUiStore((s) => s.setSeoulOnlyToastVisible);
   const timerRef = useRef(null);
@@ -42,12 +44,12 @@ export default function SeoulOnlyToast() {
         if (!timerRef.current) timerRef.current = setTimeout(close, AUTO_DISMISS_MS);
       }}
     >
-      <p className="flex-1">서울 지역만 서비스되고 있습니다. 원하시는 지역을 선택해 주세요.</p>
+      <p className="flex-1">{t('location.seoulOnlyToast')}</p>
       <button
         type="button"
         onClick={close}
         className="shrink-0 p-1 rounded hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/50"
-        aria-label="알림 닫기"
+        aria-label={t('common.closeNotification')}
       >
         <CloseIcon />
       </button>

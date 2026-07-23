@@ -4,24 +4,27 @@
 import useLocationStore from '@/stores/useLocationStore';
 import useMapStore from '@/stores/useMapStore';
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { getFilterInfoData } from './SelectShowMapType';
 import { FaMapLocationDot } from 'react-icons/fa6';
 import { findStorageItem } from '@/utils/util';
 import { useShallow } from 'zustand/react/shallow';
+import { getCategoryLabel, getPoiDisplayTitle } from '@/utils/label';
 
+// 값(로직 비교·필터 키)은 KO 정본 유지, 표시만 t()로 변환 (RN PoiCard 패리티)
 const selectType = ['추천', '인기'];
 
 export default function RecommendPlace() {
-  const { location, culturalSpaceInfo, dodreamgilInfo, parkInfo, myGeoInfo } =
-    useLocationStore(
-      useShallow((state) => ({
-        location: state.location,
-        culturalSpaceInfo: state.culturalSpaceInfo,
-        dodreamgilInfo: state.dodreamgilInfo,
-        parkInfo: state.parkInfo,
-        myGeoInfo: state.myGeoInfo,
-      }))
-    );
+  const { t, i18n } = useTranslation();
+  const { location, culturalSpaceInfo, dodreamgilInfo, parkInfo, myGeoInfo } = useLocationStore(
+    useShallow((state) => ({
+      location: state.location,
+      culturalSpaceInfo: state.culturalSpaceInfo,
+      dodreamgilInfo: state.dodreamgilInfo,
+      parkInfo: state.parkInfo,
+      myGeoInfo: state.myGeoInfo,
+    }))
+  );
   const onClickRecommendMaker = useMapStore((state) => state.onClickRecommendMaker);
   const [selectedType, setSelectedType] = useState('추천');
   const [recommendContent, setRecommendContent] = useState(undefined);
@@ -38,16 +41,28 @@ export default function RecommendPlace() {
     if (location === '현재 위치' && !myGeoInfo?.gu) return;
     const mylocation = location === '현재 위치' ? myGeoInfo.gu.long_name : location;
     const type = '랜덤';
-    const recommendItem = getFilterInfoData(type, mylocation, culturalSpaceInfo, parkInfo, dodreamgilInfo);
-    const popularItem = getFilterInfoData(type, mylocation, culturalSpaceInfo, parkInfo, dodreamgilInfo);
+    const recommendItem = getFilterInfoData(
+      type,
+      mylocation,
+      culturalSpaceInfo,
+      parkInfo,
+      dodreamgilInfo
+    );
+    const popularItem = getFilterInfoData(
+      type,
+      mylocation,
+      culturalSpaceInfo,
+      parkInfo,
+      dodreamgilInfo
+    );
     setRecommendContent(recommendItem);
     setPopularContent(popularItem);
   }, [location, culturalSpaceInfo, dodreamgilInfo, parkInfo, myGeoInfo]);
 
   return (
-    <div className="border border-[#ededed] w-full h-[410px] overflow-hidden rounded-lg p-2 flex flex-col gap-2">
+    <div className="border border-[#ededed] w-full min-h-[200px] rounded-lg p-2 flex flex-col gap-2">
       <div className="flex">
-        <ul className="flex gap-2" role="tablist" aria-label="추천/인기 선택">
+        <ul className="flex gap-2" role="tablist" aria-label={t('recommend.tabSelectLabel')}>
           {selectType.map((type) => (
             <li key={type} role="presentation">
               <button
@@ -59,14 +74,14 @@ export default function RecommendPlace() {
                 }`}
                 onClick={() => setSelectedType(type)}
               >
-                {type}
+                {type === '추천' ? t('recommend.recommendTab') : t('recommend.popularTab')}
               </button>
             </li>
           ))}
         </ul>
       </div>
       <p className="break-keep">
-        {selectedType === '추천' ? '오늘 추천하는 데이트 장소입니다.' : '오늘 많은 방문자가 다녀간 데이트 장소입니다.'}
+        {selectedType === '추천' ? t('recommend.recommendDesc') : t('recommend.popularDesc')}
       </p>
       <div>
         <ul className="flex flex-col gap-2">
@@ -80,18 +95,21 @@ export default function RecommendPlace() {
                   <div id={`type_${item.type}`} className="w-2 min-w-2 h-full" />
                   <div className="flex flex-col p-2 overflow-y-auto w-full scroll_min">
                     <p className="text-base flex justify-between">
-                      <span>{item.title}</span>
+                      <span>{getPoiDisplayTitle(item, i18n.language)}</span>
                       <button
                         type="button"
                         className="text-black cursor-pointer"
                         onClick={() => onClickRecommendMaker(item.lat, item.type)}
-                        aria-label={`${item.title} 위치로 지도 이동`}
+                        aria-label={t('poi.viewOnMapLabel', {
+                          title: getPoiDisplayTitle(item, i18n.language),
+                        })}
                       >
                         <FaMapLocationDot />
                       </button>
                     </p>
                     <p className="text-xs">
-                      {item.type} / {item.type === '두드림길' ? ` ${item.detailCourse} ` : item.phone}
+                      {getCategoryLabel(item.type, i18n.language)} /{' '}
+                      {item.type === '두드림길' ? ` ${item.detailCourse} ` : item.phone}
                     </p>
                     {item.type !== '두드림길' && <p className="text-xs">{item.address}</p>}
                   </div>

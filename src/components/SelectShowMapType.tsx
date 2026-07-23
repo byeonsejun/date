@@ -4,6 +4,8 @@ import useLocationStore from '@/stores/useLocationStore';
 import useMapStore from '@/stores/useMapStore';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
+import { useTranslation } from 'react-i18next';
+import { getCategoryLabel } from '@/utils/label';
 
 const selectType = [
   { name: '전체', class: 'select_color_all' },
@@ -13,6 +15,8 @@ const selectType = [
 ];
 
 export default function SelectShowMapType() {
+  const { t, i18n } = useTranslation();
+  const language = i18n.language;
   const { location, myGeoInfo, parkInfo, dodreamgilInfo, culturalSpaceInfo } = useLocationStore(
     useShallow((state) => ({
       location: state.location,
@@ -30,26 +34,29 @@ export default function SelectShowMapType() {
     }))
   );
 
-  const getShowItem = useCallback((myLc, park, dodr, cult, type) => {
-    let currentInfo = [];
-    switch (type) {
-      case '전체':
-        currentInfo = getFilterInfoData(type, myLc, cult, park, dodr);
-        break;
-      case '문화공간':
-        currentInfo = getFilterInfoData(type, myLc, cult);
-        break;
-      case '공원':
-        currentInfo = getFilterInfoData(type, myLc, park);
-        break;
-      case '두드림길':
-        currentInfo = getFilterInfoData(type, myLc, dodr);
-        break;
-      default:
-        break;
-    }
-    setShowPoint(currentInfo);
-  }, [setShowPoint]);
+  const getShowItem = useCallback(
+    (myLc, park, dodr, cult, type) => {
+      let currentInfo = [];
+      switch (type) {
+        case '전체':
+          currentInfo = getFilterInfoData(type, myLc, cult, park, dodr);
+          break;
+        case '문화공간':
+          currentInfo = getFilterInfoData(type, myLc, cult);
+          break;
+        case '공원':
+          currentInfo = getFilterInfoData(type, myLc, park);
+          break;
+        case '두드림길':
+          currentInfo = getFilterInfoData(type, myLc, dodr);
+          break;
+        default:
+          break;
+      }
+      setShowPoint(currentInfo);
+    },
+    [setShowPoint]
+  );
 
   useEffect(() => {
     if (findStorageItem('locationAgree') && !myGeoInfo) return;
@@ -59,7 +66,11 @@ export default function SelectShowMapType() {
   }, [parkInfo, dodreamgilInfo, culturalSpaceInfo, myGeoInfo, location, selectedType, getShowItem]);
 
   return (
-    <ul className="flex items-center justify-center gap-2 absolute z-10 top-2 left-2" role="tablist" aria-label="지도 타입 필터">
+    <ul
+      className="flex items-center justify-center gap-2 absolute z-10 top-2 left-2"
+      role="tablist"
+      aria-label={t('map.typeFilterLabel')}
+    >
       {selectType.map((item) => (
         <li key={item.name} role="presentation">
           <button
@@ -67,17 +78,69 @@ export default function SelectShowMapType() {
             role="tab"
             aria-selected={selectedType === item.name}
             className={`${
-              selectedType === item.name ? `${item.class} text-white` : 'bg-white hover:bg-slate-100'
+              selectedType === item.name
+                ? `${item.class} text-white`
+                : 'bg-white hover:bg-slate-100'
             } p-2 rounded-lg`}
             onClick={() => setSelectedType(item.name)}
           >
-            {item.name}
+            {getCategoryLabel(item.name, language)}
           </button>
         </li>
       ))}
     </ul>
   );
 }
+
+/**
+ * 두드림길 그룹의 `location`은 "종로구" 단일 또는 "강북구,도봉구,종로구"처럼 콤마로 여러
+ * 구를 묶기도 한다. 과거 `const [x] = data.filter((i) => i.location.includes(myLc))`는 배열에서
+ * 가장 먼저 매치되는 그룹 하나만 취해, 뒤에 있는 단일 구 전용 그룹이 통째로 누락됐다
+ * (예: "종로구,중구"가 먼저 매치돼 "종로구" 전용 그룹 111건이 숨겨짐 → 종로구가 6건만 노출).
+ *
+ * 콤마 분리 후 정확 매칭되는 모든 그룹을 모으고, 여러 그룹에 겹치는 트레일 POI + 그룹 내부
+ * 중복을 이름 + 좌표(toFixed(6)) 기준으로 dedupe한다. (RN 저장소 portfolio-rn cb541ad와 동일 로직)
+ */
+const collectDodreamgilRecords = (groups, myLc) => {
+  const matched = groups.filter((group) =>
+    group.location.split(',').some((name) => name.trim() === myLc)
+  );
+  const seen = new Set();
+  const records = [];
+  for (const group of matched) {
+    for (const record of group.data) {
+      const lat = Number(record.latitude);
+      const lng = Number(record.longitude);
+      if (!Number.isFinite(lat) || !Number.isFinite(lng)) continue;
+      const dedupeKey = `${record.CPI_NAME}@${lat.toFixed(6)},${lng.toFixed(6)}`;
+      if (seen.has(dedupeKey)) continue;
+      seen.add(dedupeKey);
+      records.push(record);
+    }
+  }
+  return records;
+};
+
+/** 두드림길 원본 레코드 → 지도/추천 표시용 객체. (두드림길/전체/랜덤 3경로 공통) */
+const mapDodreamgilRecord = (data) => ({
+  type: '두드림길',
+  lat: data.latitude,
+  lng: data.longitude,
+  title: data.CPI_NAME,
+  titleEn: data.CPI_NAME_en ?? undefined,
+  contentType: data.COURSE_CATEGORY_NM,
+  desc: data.CONTENT ?? undefined,
+  img: undefined,
+  url: undefined,
+  phone: undefined,
+  address: undefined,
+  inCharge: undefined,
+  courseName: data.COURSE_NAME ?? undefined,
+  distance: data.DISTANCE ?? undefined,
+  leadTime: data.LEAD_TIME ?? undefined,
+  detailCourse: data.DETAIL_COURSE ?? undefined,
+  level: data.COURSE_LEVEL ?? undefined,
+});
 
 export const getFilterInfoData = (type, myLc, data, data2, data3) => {
   let filterData = [];
@@ -90,6 +153,7 @@ export const getFilterInfoData = (type, myLc, data, data2, data3) => {
           lat: data.X_COORD,
           lng: data.Y_COORD,
           title: data.FAC_NAME,
+          titleEn: data.FAC_NAME_en ?? undefined,
           contentType: data.SUBJCODE ?? undefined,
           desc: data.FAC_DESC ?? undefined,
           img: data.MAIN_IMG ?? undefined,
@@ -112,6 +176,7 @@ export const getFilterInfoData = (type, myLc, data, data2, data3) => {
           lat: data.latitude,
           lng: data.longitude,
           title: data.p_park,
+          titleEn: data.p_park_en ?? undefined,
           contentType: '공원',
           desc: data.p_list_content ?? undefined,
           img: data.p_img ?? undefined,
@@ -127,27 +192,7 @@ export const getFilterInfoData = (type, myLc, data, data2, data3) => {
       });
       break;
     case '두드림길':
-      const [dodrimContent] = data.filter((item) => item.location.includes(myLc));
-      filterData = dodrimContent.data.map((data) => {
-        return {
-          type: '두드림길',
-          lat: data.latitude,
-          lng: data.longitude,
-          title: data.CPI_NAME,
-          contentType: data.COURSE_CATEGORY_NM,
-          desc: data.CONTENT ?? undefined,
-          img: undefined,
-          url: undefined,
-          phone: undefined,
-          address: undefined,
-          inCharge: undefined,
-          courseName: data.COURSE_NAME ?? undefined,
-          distance: data.DISTANCE ?? undefined,
-          leadTime: data.LEAD_TIME ?? undefined,
-          detailCourse: data.DETAIL_COURSE ?? undefined,
-          level: data.COURSE_LEVEL ?? undefined,
-        };
-      });
+      filterData = collectDodreamgilRecords(data, myLc).map(mapDodreamgilRecord);
       break;
     case '전체':
       const [allCultureContent] = data.filter((item) => item.location === myLc);
@@ -157,6 +202,7 @@ export const getFilterInfoData = (type, myLc, data, data2, data3) => {
           lat: data.X_COORD,
           lng: data.Y_COORD,
           title: data.FAC_NAME,
+          titleEn: data.FAC_NAME_en ?? undefined,
           contentType: data.SUBJCODE ?? undefined,
           desc: data.FAC_DESC ?? undefined,
           img: data.MAIN_IMG ?? undefined,
@@ -177,6 +223,7 @@ export const getFilterInfoData = (type, myLc, data, data2, data3) => {
           lat: data.latitude,
           lng: data.longitude,
           title: data.p_park,
+          titleEn: data.p_park_en ?? undefined,
           contentType: '공원',
           desc: data.p_list_content ?? undefined,
           img: data.p_img ?? undefined,
@@ -190,27 +237,7 @@ export const getFilterInfoData = (type, myLc, data, data2, data3) => {
           level: undefined,
         };
       });
-      const [allDodrimContent] = data3.filter((item) => item.location.includes(myLc));
-      const dodrimData = allDodrimContent.data.map((data) => {
-        return {
-          type: '두드림길',
-          lat: data.latitude,
-          lng: data.longitude,
-          title: data.CPI_NAME,
-          contentType: data.COURSE_CATEGORY_NM,
-          desc: data.CONTENT ?? undefined,
-          img: undefined,
-          url: undefined,
-          phone: undefined,
-          address: undefined,
-          inCharge: undefined,
-          courseName: data.COURSE_NAME ?? undefined,
-          distance: data.DISTANCE ?? undefined,
-          leadTime: data.LEAD_TIME ?? undefined,
-          detailCourse: data.DETAIL_COURSE ?? undefined,
-          level: data.COURSE_LEVEL ?? undefined,
-        };
-      });
+      const dodrimData = collectDodreamgilRecords(data3, myLc).map(mapDodreamgilRecord);
       filterData = cultureData.concat(parkData, dodrimData);
       break;
     case '랜덤':
@@ -221,6 +248,7 @@ export const getFilterInfoData = (type, myLc, data, data2, data3) => {
         lat: randomCulResult.X_COORD,
         lng: randomCulResult.Y_COORD,
         title: randomCulResult.FAC_NAME,
+        titleEn: randomCulResult.FAC_NAME_en ?? undefined,
         contentType: randomCulResult.SUBJCODE ?? undefined,
         desc: randomCulResult.FAC_DESC ?? undefined,
         img: randomCulResult.MAIN_IMG ?? undefined,
@@ -241,6 +269,7 @@ export const getFilterInfoData = (type, myLc, data, data2, data3) => {
         lat: randomParkResult.latitude,
         lng: randomParkResult.longitude,
         title: randomParkResult.p_park,
+        titleEn: randomParkResult.p_park_en ?? undefined,
         contentType: '공원',
         desc: randomParkResult.p_list_content ?? undefined,
         img: randomParkResult.p_img ?? undefined,
@@ -254,26 +283,8 @@ export const getFilterInfoData = (type, myLc, data, data2, data3) => {
         level: undefined,
       };
 
-      const [randomDodrimContent] = data3.filter((item) => item.location.includes(myLc));
-      const randomDodrimResult = getRandomIndexItem(randomDodrimContent.data);
-      const randomDodrimData = {
-        type: '두드림길',
-        lat: randomDodrimResult.latitude,
-        lng: randomDodrimResult.longitude,
-        title: randomDodrimResult.CPI_NAME,
-        contentType: randomDodrimResult.COURSE_CATEGORY_NM,
-        desc: randomDodrimResult.CONTENT ?? undefined,
-        img: undefined,
-        url: undefined,
-        phone: undefined,
-        address: undefined,
-        inCharge: undefined,
-        courseName: randomDodrimResult.COURSE_NAME ?? undefined,
-        distance: randomDodrimResult.DISTANCE ?? undefined,
-        leadTime: randomDodrimResult.LEAD_TIME ?? undefined,
-        detailCourse: randomDodrimResult.DETAIL_COURSE ?? undefined,
-        level: randomDodrimResult.COURSE_LEVEL ?? undefined,
-      };
+      const randomDodrimResult = getRandomIndexItem(collectDodreamgilRecords(data3, myLc));
+      const randomDodrimData = mapDodreamgilRecord(randomDodrimResult);
       filterData = [randomCultureData, randomParkData, randomDodrimData];
       break;
     default:
