@@ -40,6 +40,8 @@
     "loadingPlaces": "Loading recommendations...",
     "todayPlacesTitle": "Today's Recommended Date Spots",
     "tabSelectLabel": "Recommended or popular",
+    "recommendTab": "Recommended",
+    "popularTab": "Popular",
     "recommendDesc": "Today's recommended date spots.",
     "popularDesc": "Date spots many people visited today."
   },

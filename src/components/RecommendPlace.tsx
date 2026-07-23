@@ -9,11 +9,13 @@ import { getFilterInfoData } from './SelectShowMapType';
 import { FaMapLocationDot } from 'react-icons/fa6';
 import { findStorageItem } from '@/utils/util';
 import { useShallow } from 'zustand/react/shallow';
+import { getCategoryLabel, getPoiDisplayTitle } from '@/utils/label';
 
+// 값(로직 비교·필터 키)은 KO 정본 유지, 표시만 t()로 변환 (RN PoiCard 패리티)
 const selectType = ['추천', '인기'];
 
 export default function RecommendPlace() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { location, culturalSpaceInfo, dodreamgilInfo, parkInfo, myGeoInfo } = useLocationStore(
     useShallow((state) => ({
       location: state.location,
@@ -72,7 +74,7 @@ export default function RecommendPlace() {
                 }`}
                 onClick={() => setSelectedType(type)}
               >
-                {type}
+                {type === '추천' ? t('recommend.recommendTab') : t('recommend.popularTab')}
               </button>
             </li>
           ))}
@@ -93,18 +95,20 @@ export default function RecommendPlace() {
                   <div id={`type_${item.type}`} className="w-2 min-w-2 h-full" />
                   <div className="flex flex-col p-2 overflow-y-auto w-full scroll_min">
                     <p className="text-base flex justify-between">
-                      <span>{item.title}</span>
+                      <span>{getPoiDisplayTitle(item, i18n.language)}</span>
                       <button
                         type="button"
                         className="text-black cursor-pointer"
                         onClick={() => onClickRecommendMaker(item.lat, item.type)}
-                        aria-label={t('poi.viewOnMapLabel', { title: item.title })}
+                        aria-label={t('poi.viewOnMapLabel', {
+                          title: getPoiDisplayTitle(item, i18n.language),
+                        })}
                       >
                         <FaMapLocationDot />
                       </button>
                     </p>
                     <p className="text-xs">
-                      {item.type} /{' '}
+                      {getCategoryLabel(item.type, i18n.language)} /{' '}
                       {item.type === '두드림길' ? ` ${item.detailCourse} ` : item.phone}
                     </p>
                     {item.type !== '두드림길' && <p className="text-xs">{item.address}</p>}
