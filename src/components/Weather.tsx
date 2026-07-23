@@ -69,7 +69,7 @@ export default function Weather() {
             <div className="flex justify-between mb-2">
               {todayWeather && (
                 <>
-                  <div>
+                  <div className="flex-1 min-w-0">
                     <p className="text-2xl text-white">{locationLabel}</p>
                     <p className="text-xs text-white mb-2">
                       {format(date, 'MMMM')} {getCurrentTime('day')}, {getCurrentTime('year')}
@@ -90,7 +90,7 @@ export default function Weather() {
                       </span>
                     </div>
                   </div>
-                  <div>
+                  <div className="shrink-0">
                     <p className="text-white text-[72px] mt-3 leading-none text-li tracki tracking-[-0.25rem] flex">
                       {todayWeather && getInteger(todayWeather.main.temp)}
                       <span className="text-5xl">°</span>
