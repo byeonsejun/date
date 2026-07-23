@@ -69,8 +69,8 @@ export default function Weather() {
             <div className="flex justify-between mb-2">
               {todayWeather && (
                 <>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-2xl text-white">{locationLabel}</p>
+                  <div className="flex-1 min-w-0 overflow-hidden">
+                    <p className="text-2xl text-white break-words">{locationLabel}</p>
                     <p className="text-xs text-white mb-2">
                       {format(date, 'MMMM')} {getCurrentTime('day')}, {getCurrentTime('year')}
                     </p>
