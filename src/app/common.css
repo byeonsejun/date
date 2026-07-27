@@ -9,6 +9,17 @@ body {
   font-size: 16px;
   font-family: var(--font-jua), 'Jua', sans-serif !important;
 }
+
+/*
+ * 일본어 선택 시 본문 전체를 Noto Sans JP로 전환한다.
+ * Jua는 区/園/々 등 일본어 글리프를 상당수 포함하지 않아 폴백 시 폰트가 섞이므로,
+ * ja에서는 통째로 일본어 폰트로 렌더한다. (<html lang="ja">는 I18nProvider가 설정)
+ * 선택자 특이도(html[lang='ja'] body)가 위 규칙보다 높아 !important끼리도 이 규칙이 이긴다.
+ */
+html[lang='ja'],
+html[lang='ja'] body {
+  font-family: var(--font-noto-jp), 'Noto Sans JP', sans-serif !important;
+}
 body {
   min-width: 320px;
   color: #666666 !important;
