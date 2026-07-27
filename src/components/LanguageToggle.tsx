@@ -3,10 +3,10 @@
 import { SUPPORTED_LANGUAGES, type SupportedLanguage } from '@/i18n/config';
 import useLanguageStore from '@/stores/useLanguageStore';
 
-const LABELS: Record<SupportedLanguage, string> = { ko: 'KO', en: 'EN' };
+const LABELS: Record<SupportedLanguage, string> = { ko: 'KO', en: 'EN', ja: 'JA' };
 
 /**
- * KO/EN 언어 토글. RN의 세그먼트 스타일을 웹 헤더 디자인에 맞춰 재현한다.
+ * KO/EN/JA 언어 토글. RN의 세그먼트 스타일을 웹 헤더 디자인에 맞춰 재현한다.
  */
 export default function LanguageToggle() {
   const language = useLanguageStore((state) => state.language);

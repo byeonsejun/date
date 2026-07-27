@@ -2,13 +2,14 @@ import i18next from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
 import en from './locales/en.json';
+import ja from './locales/ja.json';
 import ko from './locales/ko.json';
 
 /**
- * 지원 언어. 새 언어(ja, zh 등) 추가 시 locales/xx.json 생성 후 아래 resources와
+ * 지원 언어. 새 언어(zh 등) 추가 시 locales/xx.json 생성 후 아래 resources와
  * SUPPORTED_LANGUAGES에 등록한다. (RN 저장소 portfolio-rn의 i18n 구조와 동일 스택)
  */
-export const SUPPORTED_LANGUAGES = ['ko', 'en'] as const;
+export const SUPPORTED_LANGUAGES = ['ko', 'en', 'ja'] as const;
 export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
 
 export const DEFAULT_LANGUAGE: SupportedLanguage = 'ko';
@@ -22,6 +23,7 @@ if (!i18next.isInitialized) {
     resources: {
       ko: { translation: ko },
       en: { translation: en },
+      ja: { translation: ja },
     },
     lng: DEFAULT_LANGUAGE,
     fallbackLng: DEFAULT_LANGUAGE,
