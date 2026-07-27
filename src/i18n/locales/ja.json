@@ -25,7 +25,7 @@
     "tomorrow": "明日",
     "dayAfterTomorrow": "明後日",
     "threeDaysLater": "明々後日",
-    "midnight": "午前0時",
+    "midnight": "深夜",
     "noon": "正午",
     "periodSelectLabel": "天気の期間を選択",
     "iconAlt": "{{desc}}アイコン",
