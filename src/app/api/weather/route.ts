@@ -17,6 +17,7 @@ const WEATHER_API_KEY = process.env.WEATHER_API_KEY ?? process.env.NEXT_PUBLIC_W
 const OPENWEATHER_LANG_BY_APP_LANG: Record<WeatherLang, string> = {
   ko: 'kr',
   en: 'en',
+  ja: 'ja',
 };
 
 async function fetchWeather(input: unknown) {

@@ -8,7 +8,7 @@ export const LatLonRequestSchema = z.object({
 export const WeatherTypeSchema = z.enum(['weather', 'forecast']);
 
 /** 앱(RN/웹) 언어 코드. 없으면 기존 동작(한국어)을 유지하기 위해 'ko'로 기본값을 둔다. */
-export const WeatherLangSchema = z.enum(['ko', 'en']).default('ko');
+export const WeatherLangSchema = z.enum(['ko', 'en', 'ja']).default('ko');
 
 export const WeatherRequestSchema = z.object({
   type: WeatherTypeSchema,
@@ -21,7 +21,7 @@ export const WeatherRequestSchema = z.object({
  * Google Places `language` 파라미터는 ko/en을 ISO 639-1 그대로 받는다(OpenWeather의 kr 같은 예외 없음).
  * `LatLonRequestSchema`는 `/api/location`과 공유하므로 직접 확장하지 않고 별도 스키마로 둔다.
  */
-export const RestaurantLangSchema = z.enum(['ko', 'en']).default('ko');
+export const RestaurantLangSchema = z.enum(['ko', 'en', 'ja']).default('ko');
 
 export const RestaurantRequestSchema = LatLonRequestSchema.extend({
   lang: RestaurantLangSchema,
