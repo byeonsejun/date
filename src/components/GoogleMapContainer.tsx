@@ -126,12 +126,12 @@ const SelectedDetailContent = React.memo(function SelectedDetailContent({
             fill
             className="object-cover"
           />
-          <h3 className="absolute bottom-2 left-2 text-xs font-bold text-white p-2 bg-black bg-opacity-50">
+          <h3 className="absolute bottom-2 left-2 max-w-[calc(100%-1rem)] truncate text-xs font-bold text-white p-2 bg-black bg-opacity-50">
             {name}
           </h3>
         </div>
         <div className="flex flex-col gap-1 px-4">
-          <h3 className="text-xs font-bold break-keep">
+          <h3 className="text-xs font-bold break-words">
             {name}{' '}
             <span className="text-xs font-normal">
               / {openNow ? t('common.openNow') : t('common.closed')}
@@ -203,13 +203,13 @@ const SelectedDetailContent = React.memo(function SelectedDetailContent({
               onImageLoad(img);
             }}
           />
-          <h3 className="absolute bottom-2 left-2 text-xs font-bold text-white p-2 bg-black bg-opacity-50 z-[3]">
+          <h3 className="absolute bottom-2 left-2 max-w-[calc(100%-1rem)] truncate text-xs font-bold text-white p-2 bg-black bg-opacity-50 z-[3]">
             {displayTitle}
           </h3>
         </div>
       )}
       <div className="flex flex-col gap-1 px-4">
-        <h3 className="text-xs font-bold break-keep">
+        <h3 className="text-xs font-bold break-words">
           {displayTitle} {phone && <span className="text-xs font-normal"> / {phone} </span>}{' '}
           {contentType && <span className="text-xs">{contentType}</span>}
         </h3>
