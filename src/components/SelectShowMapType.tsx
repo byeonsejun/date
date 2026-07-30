@@ -81,7 +81,7 @@ export default function SelectShowMapType() {
               selectedType === item.name
                 ? `${item.class} text-white`
                 : 'bg-white hover:bg-slate-100'
-            } p-2 rounded-lg`}
+            } px-2 py-1.5 leading-tight rounded-lg`}
             onClick={() => setSelectedType(item.name)}
           >
             {getCategoryLabel(item.name, language)}
