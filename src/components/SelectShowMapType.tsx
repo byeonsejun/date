@@ -67,7 +67,7 @@ export default function SelectShowMapType() {
 
   return (
     <ul
-      className="flex items-center justify-center gap-2 absolute z-10 top-2 left-2"
+      className="flex items-center justify-center gap-2 absolute z-10 top-2 left-2 right-2 sm:right-auto"
       role="tablist"
       aria-label={t('map.typeFilterLabel')}
     >
@@ -81,7 +81,7 @@ export default function SelectShowMapType() {
               selectedType === item.name
                 ? `${item.class} text-white`
                 : 'bg-white hover:bg-slate-100'
-            } px-2 py-1.5 leading-tight rounded-lg`}
+            } max-w-[88px] sm:max-w-none px-2 py-1.5 leading-tight rounded-lg`}
             onClick={() => setSelectedType(item.name)}
           >
             {getCategoryLabel(item.name, language)}
