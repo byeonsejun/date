@@ -377,16 +377,6 @@ export default function GoogleMapContainer() {
   const [showContentImg, setShowContentImg] = useState(null);
   const [mapTilt, setMapTilt] = useState(45);
 
-  const mapOptions = useMemo(
-    () => ({
-      ...mapOptionsBase,
-      // Mobile/tablet often cannot sustain vector rendering reliably.
-      // Use mapId only on desktop to avoid repeated vector->raster fallback errors.
-      mapId: isDesktop ? process.env.NEXT_PUBLIC_GOOGLE_MAPS_ID : undefined,
-    }),
-    [isDesktop]
-  );
-
   const hoverInfo = useMemo(
     () =>
       getHoverInfo(
@@ -411,6 +401,25 @@ export default function GoogleMapContainer() {
     version: MAPS_VERSION,
     language: 'ko',
   });
+
+  const mapOptions = useMemo(
+    () => ({
+      ...mapOptionsBase,
+      // Mobile/tablet often cannot sustain vector rendering reliably.
+      // Use mapId only on desktop to avoid repeated vector->raster fallback errors.
+      mapId: isDesktop ? process.env.NEXT_PUBLIC_GOOGLE_MAPS_ID : undefined,
+      // 전체화면 버튼을 기본 위치(우상단)에서 줌 컨트롤과 같은 우하단으로 옮겨,
+      // 우상단 카테고리 필터와 겹치지 않게 하고 지도 뷰 컨트롤끼리 한 그룹으로 묶는다.
+      // ControlPosition은 Maps API 로드 후에만 존재하므로 isLoaded로 가드한다.
+      ...(isLoaded && typeof google !== 'undefined'
+        ? {
+            fullscreenControlOptions: { position: google.maps.ControlPosition.RIGHT_BOTTOM },
+            zoomControlOptions: { position: google.maps.ControlPosition.RIGHT_BOTTOM },
+          }
+        : {}),
+    }),
+    [isDesktop, isLoaded]
+  );
 
   const syncTiltByZoom = () => {
     const map = mapRef.current;
