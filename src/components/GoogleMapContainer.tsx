@@ -118,7 +118,7 @@ const SelectedDetailContent = React.memo(function SelectedDetailContent({
     const { name, imgSrc, openNow, formattedAddress, rating, userRatingsTotal } = selectedInfo.data;
     return (
       <div className="w-[250px] h-[300px] mt-3 px-1 flex flex-col gap-3 overflow-x-hidden overflow-y-auto font-normal">
-        <div className="w-[250px] h-[150px] min-h-[150px] relative">
+        <div className="w-full h-[150px] min-h-[150px] relative">
           <Image
             src={imgSrc}
             alt={t('poi.representativeImageAlt', { name })}
@@ -176,7 +176,7 @@ const SelectedDetailContent = React.memo(function SelectedDetailContent({
       className="w-[250px] h-[300px] px-1 flex flex-col gap-3 overflow-x-hidden overflow-y-auto font-normal"
     >
       {img && (
-        <div className="w-[250px] h-[150px] min-h-[150px] relative">
+        <div className="w-full h-[150px] min-h-[150px] relative">
           <PuffLoader
             color="#f986bd"
             loading={img !== showContentImg}
