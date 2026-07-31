@@ -67,7 +67,7 @@ export default function SelectShowMapType() {
 
   return (
     <ul
-      className="flex items-center justify-center gap-2 absolute z-10 top-2 left-2"
+      className="flex items-center justify-center gap-2 absolute z-10 top-2 left-2 right-2 sm:right-auto"
       role="tablist"
       aria-label={t('map.typeFilterLabel')}
     >
@@ -81,7 +81,7 @@ export default function SelectShowMapType() {
               selectedType === item.name
                 ? `${item.class} text-white`
                 : 'bg-white hover:bg-slate-100'
-            } p-2 rounded-lg`}
+            } max-w-[88px] sm:max-w-none px-2 py-1.5 leading-tight rounded-lg`}
             onClick={() => setSelectedType(item.name)}
           >
             {getCategoryLabel(item.name, language)}
@@ -128,6 +128,7 @@ const mapDodreamgilRecord = (data) => ({
   lng: data.longitude,
   title: data.CPI_NAME,
   titleEn: data.CPI_NAME_en ?? undefined,
+  titleJa: data.CPI_NAME_ja ?? undefined,
   contentType: data.COURSE_CATEGORY_NM,
   desc: data.CONTENT ?? undefined,
   img: undefined,
@@ -154,6 +155,7 @@ export const getFilterInfoData = (type, myLc, data, data2, data3) => {
           lng: data.Y_COORD,
           title: data.FAC_NAME,
           titleEn: data.FAC_NAME_en ?? undefined,
+          titleJa: data.FAC_NAME_ja ?? undefined,
           contentType: data.SUBJCODE ?? undefined,
           desc: data.FAC_DESC ?? undefined,
           img: data.MAIN_IMG ?? undefined,
@@ -177,6 +179,7 @@ export const getFilterInfoData = (type, myLc, data, data2, data3) => {
           lng: data.longitude,
           title: data.p_park,
           titleEn: data.p_park_en ?? undefined,
+          titleJa: data.p_park_ja ?? undefined,
           contentType: '공원',
           desc: data.p_list_content ?? undefined,
           img: data.p_img ?? undefined,
@@ -203,6 +206,7 @@ export const getFilterInfoData = (type, myLc, data, data2, data3) => {
           lng: data.Y_COORD,
           title: data.FAC_NAME,
           titleEn: data.FAC_NAME_en ?? undefined,
+          titleJa: data.FAC_NAME_ja ?? undefined,
           contentType: data.SUBJCODE ?? undefined,
           desc: data.FAC_DESC ?? undefined,
           img: data.MAIN_IMG ?? undefined,
@@ -224,6 +228,7 @@ export const getFilterInfoData = (type, myLc, data, data2, data3) => {
           lng: data.longitude,
           title: data.p_park,
           titleEn: data.p_park_en ?? undefined,
+          titleJa: data.p_park_ja ?? undefined,
           contentType: '공원',
           desc: data.p_list_content ?? undefined,
           img: data.p_img ?? undefined,
@@ -249,6 +254,7 @@ export const getFilterInfoData = (type, myLc, data, data2, data3) => {
         lng: randomCulResult.Y_COORD,
         title: randomCulResult.FAC_NAME,
         titleEn: randomCulResult.FAC_NAME_en ?? undefined,
+        titleJa: randomCulResult.FAC_NAME_ja ?? undefined,
         contentType: randomCulResult.SUBJCODE ?? undefined,
         desc: randomCulResult.FAC_DESC ?? undefined,
         img: randomCulResult.MAIN_IMG ?? undefined,
@@ -270,6 +276,7 @@ export const getFilterInfoData = (type, myLc, data, data2, data3) => {
         lng: randomParkResult.longitude,
         title: randomParkResult.p_park,
         titleEn: randomParkResult.p_park_en ?? undefined,
+        titleJa: randomParkResult.p_park_ja ?? undefined,
         contentType: '공원',
         desc: randomParkResult.p_list_content ?? undefined,
         img: randomParkResult.p_img ?? undefined,

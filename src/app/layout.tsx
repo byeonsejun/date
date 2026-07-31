@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { Jua } from 'next/font/google';
+import { Jua, Noto_Sans_JP } from 'next/font/google';
 import './common.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -15,6 +15,20 @@ const juaFont = Jua({
   variable: '--font-jua',
 });
 
+/**
+ * 일본어용 폰트. Jua(한국어 디스플레이 폰트)는 区/園/々 등 일본어 글리프 상당수를 포함하지
+ * 않아, 일본어에서는 글자별 시스템 폴백으로 폰트가 섞이거나 자형이 어긋난다.
+ * 일본어 선택 시(common.css의 html[lang='ja']) 본문 전체를 이 폰트로 전환한다.
+ * (CJK 대용량 폰트라 preload는 끄고 표시 문자에 대해서만 unicode-range 청크를 지연 로드)
+ */
+const notoSansJp = Noto_Sans_JP({
+  weight: ['400', '700'],
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-noto-jp',
+  preload: false,
+});
+
 export const metadata = {
   title: {
     default: '서울, 너와 함께',
@@ -25,7 +39,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="ko" className={`${juaFont.variable} ${juaFont.className}`}>
+    <html lang="ko" className={`${juaFont.variable} ${notoSansJp.variable} ${juaFont.className}`}>
       <body className="w-full min-h-screen flex flex-col max-w-[2560px] m-auto">
         <I18nProvider>
           <Header />

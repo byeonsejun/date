@@ -118,7 +118,7 @@ const SelectedDetailContent = React.memo(function SelectedDetailContent({
     const { name, imgSrc, openNow, formattedAddress, rating, userRatingsTotal } = selectedInfo.data;
     return (
       <div className="w-[250px] h-[300px] mt-3 px-1 flex flex-col gap-3 overflow-x-hidden overflow-y-auto font-normal">
-        <div className="w-[250px] h-[150px] min-h-[150px] relative">
+        <div className="w-full h-[150px] min-h-[150px] relative">
           <Image
             src={imgSrc}
             alt={t('poi.representativeImageAlt', { name })}
@@ -126,12 +126,12 @@ const SelectedDetailContent = React.memo(function SelectedDetailContent({
             fill
             className="object-cover"
           />
-          <h3 className="absolute bottom-2 left-2 text-xs font-bold text-white p-2 bg-black bg-opacity-50">
+          <h3 className="absolute bottom-2 left-2 max-w-[calc(100%-1rem)] truncate text-xs font-bold text-white p-2 bg-black bg-opacity-50">
             {name}
           </h3>
         </div>
         <div className="flex flex-col gap-1 px-4">
-          <h3 className="text-xs font-bold break-keep">
+          <h3 className="text-xs font-bold break-words">
             {name}{' '}
             <span className="text-xs font-normal">
               / {openNow ? t('common.openNow') : t('common.closed')}
@@ -176,7 +176,7 @@ const SelectedDetailContent = React.memo(function SelectedDetailContent({
       className="w-[250px] h-[300px] px-1 flex flex-col gap-3 overflow-x-hidden overflow-y-auto font-normal"
     >
       {img && (
-        <div className="w-[250px] h-[150px] min-h-[150px] relative">
+        <div className="w-full h-[150px] min-h-[150px] relative">
           <PuffLoader
             color="#f986bd"
             loading={img !== showContentImg}
@@ -203,13 +203,13 @@ const SelectedDetailContent = React.memo(function SelectedDetailContent({
               onImageLoad(img);
             }}
           />
-          <h3 className="absolute bottom-2 left-2 text-xs font-bold text-white p-2 bg-black bg-opacity-50 z-[3]">
+          <h3 className="absolute bottom-2 left-2 max-w-[calc(100%-1rem)] truncate text-xs font-bold text-white p-2 bg-black bg-opacity-50 z-[3]">
             {displayTitle}
           </h3>
         </div>
       )}
       <div className="flex flex-col gap-1 px-4">
-        <h3 className="text-xs font-bold break-keep">
+        <h3 className="text-xs font-bold break-words">
           {displayTitle} {phone && <span className="text-xs font-normal"> / {phone} </span>}{' '}
           {contentType && <span className="text-xs">{contentType}</span>}
         </h3>
@@ -377,16 +377,6 @@ export default function GoogleMapContainer() {
   const [showContentImg, setShowContentImg] = useState(null);
   const [mapTilt, setMapTilt] = useState(45);
 
-  const mapOptions = useMemo(
-    () => ({
-      ...mapOptionsBase,
-      // Mobile/tablet often cannot sustain vector rendering reliably.
-      // Use mapId only on desktop to avoid repeated vector->raster fallback errors.
-      mapId: isDesktop ? process.env.NEXT_PUBLIC_GOOGLE_MAPS_ID : undefined,
-    }),
-    [isDesktop]
-  );
-
   const hoverInfo = useMemo(
     () =>
       getHoverInfo(
@@ -411,6 +401,25 @@ export default function GoogleMapContainer() {
     version: MAPS_VERSION,
     language: 'ko',
   });
+
+  const mapOptions = useMemo(
+    () => ({
+      ...mapOptionsBase,
+      // Mobile/tablet often cannot sustain vector rendering reliably.
+      // Use mapId only on desktop to avoid repeated vector->raster fallback errors.
+      mapId: isDesktop ? process.env.NEXT_PUBLIC_GOOGLE_MAPS_ID : undefined,
+      // 전체화면 버튼을 기본 위치(우상단)에서 줌 컨트롤과 같은 우하단으로 옮겨,
+      // 우상단 카테고리 필터와 겹치지 않게 하고 지도 뷰 컨트롤끼리 한 그룹으로 묶는다.
+      // ControlPosition은 Maps API 로드 후에만 존재하므로 isLoaded로 가드한다.
+      ...(isLoaded && typeof google !== 'undefined'
+        ? {
+            fullscreenControlOptions: { position: google.maps.ControlPosition.RIGHT_BOTTOM },
+            zoomControlOptions: { position: google.maps.ControlPosition.RIGHT_BOTTOM },
+          }
+        : {}),
+    }),
+    [isDesktop, isLoaded]
+  );
 
   const syncTiltByZoom = () => {
     const map = mapRef.current;

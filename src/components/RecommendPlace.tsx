@@ -80,7 +80,7 @@ export default function RecommendPlace() {
           ))}
         </ul>
       </div>
-      <p className="break-keep">
+      <p className="break-words">
         {selectedType === '추천' ? t('recommend.recommendDesc') : t('recommend.popularDesc')}
       </p>
       <div>
