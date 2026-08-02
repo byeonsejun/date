@@ -13,11 +13,13 @@ const WEATHER_API_KEY = process.env.WEATHER_API_KEY ?? process.env.NEXT_PUBLIC_W
 /**
  * 앱 언어 코드 → OpenWeather `lang` 파라미터 코드 매핑.
  * OpenWeather는 한국어를 ISO 639-1 `ko`가 아니라 자체 코드 `kr`로 받는다(공식 문서 기준 알려진 예외).
+ * 중국어(간체)도 `zh`가 아니라 `zh_cn`으로 받는다(번체는 `zh_tw`). `kr`과 같은 예외.
  */
 const OPENWEATHER_LANG_BY_APP_LANG: Record<WeatherLang, string> = {
   ko: 'kr',
   en: 'en',
   ja: 'ja',
+  zh: 'zh_cn',
 };
 
 async function fetchWeather(input: unknown) {

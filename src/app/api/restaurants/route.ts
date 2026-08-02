@@ -4,10 +4,23 @@ import {
   GooglePlacesTextSearchResponseSchema,
   RestaurantRequestSchema,
   type NormalizedRestaurant,
+  type RestaurantRequest,
 } from '@/types/external-api';
 import { z } from 'zod';
 
 const GOOGLE_MAPS_SERVER_KEY = process.env.GOOGLE_MAPS_SERVER_KEY;
+
+/**
+ * 앱 언어 코드 → Google Places `language` 파라미터 코드 매핑.
+ * ko/en/ja는 ISO 639-1 그대로지만, 중국어는 `zh`가 아니라 `zh-CN`(간체)/`zh-TW`(번체)만 받는다.
+ * (OpenWeather의 `zh_cn`과 달리 하이픈 표기임에 주의)
+ */
+const PLACES_LANG_BY_APP_LANG: Record<RestaurantRequest['lang'], string> = {
+  ko: 'ko',
+  en: 'en',
+  ja: 'ja',
+  zh: 'zh-CN',
+};
 
 const PhotoRequestSchema = z.object({
   photoReference: z.string().min(1),
@@ -52,9 +65,10 @@ async function fetchRestaurants(input: unknown, imgBaseUrl: string) {
     return NextResponse.json({ message: 'lat and lon are required' }, { status: 400 });
   }
   const { lat, lon, lang } = parseResult.data;
+  const placesLang = PLACES_LANG_BY_APP_LANG[lang];
 
   const restaurantData = await fetch(
-    `https://maps.googleapis.com/maps/api/place/textsearch/json?query=맛집&location=${lat},${lon}&radius=1000&language=${lang}&key=${GOOGLE_MAPS_SERVER_KEY}&types=restaurant`
+    `https://maps.googleapis.com/maps/api/place/textsearch/json?query=맛집&location=${lat},${lon}&radius=1000&language=${placesLang}&key=${GOOGLE_MAPS_SERVER_KEY}&types=restaurant`
   ).then((res) => res.json());
 
   const validated = GooglePlacesTextSearchResponseSchema.safeParse(restaurantData);
