@@ -24,8 +24,8 @@ export default function I18nProvider({ children }: { children: ReactNode }) {
     void useLanguageStore.persist.rehydrate();
   }, []);
 
-  // 선택 언어를 <html lang>에 반영한다. 일본어일 때 common.css가 이 속성으로
-  // 본문 폰트를 Noto Sans JP로 전환한다. (서버 초기값은 'ko', 전환은 마운트 후에만)
+  // 선택 언어를 <html lang>에 반영한다. common.css가 이 속성으로 본문 폰트를 전환한다
+  // (ja→Noto Sans JP, zh→Noto Sans SC). (서버 초기값은 'ko', 전환은 마운트 후에만)
   useEffect(() => {
     document.documentElement.lang = language;
   }, [language]);

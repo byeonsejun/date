@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { Jua, Noto_Sans_JP } from 'next/font/google';
+import { Jua, Noto_Sans_JP, Noto_Sans_SC } from 'next/font/google';
 import './common.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -29,6 +29,19 @@ const notoSansJp = Noto_Sans_JP({
   preload: false,
 });
 
+/**
+ * 중국어(간체)용 폰트. Jua는 关/无/东/铜/龙 등 간체 글리프를 포함하지 않아,
+ * 중국어 선택 시(common.css의 html[lang='zh']) 본문 전체를 Noto Sans SC로 전환한다.
+ * (일본어 Noto Sans JP와 동일 정책 — CJK 대용량이라 preload 끄고 지연 로드)
+ */
+const notoSansSc = Noto_Sans_SC({
+  weight: ['400', '700'],
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-noto-sc',
+  preload: false,
+});
+
 export const metadata = {
   title: {
     default: '서울, 너와 함께',
@@ -39,7 +52,10 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="ko" className={`${juaFont.variable} ${notoSansJp.variable} ${juaFont.className}`}>
+    <html
+      lang="ko"
+      className={`${juaFont.variable} ${notoSansJp.variable} ${notoSansSc.variable} ${juaFont.className}`}
+    >
       <body className="w-full min-h-screen flex flex-col max-w-[2560px] m-auto">
         <I18nProvider>
           <Header />

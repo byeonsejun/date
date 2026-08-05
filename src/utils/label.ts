@@ -39,6 +39,9 @@ export const getDistrictLabel = (district, language) => {
   // (일본어 사용자에게는 한국어 원문보다 영어 표기가 유용. docs/i18n-cjk-naming.md §6)
   if (language === 'ja')
     return district?.location_ja ?? district?.location_en ?? district?.location ?? '';
+  // 중국어는 location_zh -> location_en -> location(ko) 순으로 폴백한다. (docs/i18n-cjk-naming.md §7-6)
+  if (language === 'zh')
+    return district?.location_zh ?? district?.location_en ?? district?.location ?? '';
   if (language === 'en' && district?.location_en) return district.location_en;
   return district?.location ?? '';
 };
@@ -51,6 +54,8 @@ export const getDistrictLabel = (district, language) => {
 export const getPoiDisplayTitle = (poi, language) => {
   // 일본어는 titleJa -> titleEn -> title(ko) 순으로 폴백한다. (docs/i18n-cjk-naming.md §6)
   if (language === 'ja') return poi?.titleJa ?? poi?.titleEn ?? poi?.title ?? '';
+  // 중국어는 titleZh -> titleEn -> title(ko) 순으로 폴백한다. (docs/i18n-cjk-naming.md §7-6)
+  if (language === 'zh') return poi?.titleZh ?? poi?.titleEn ?? poi?.title ?? '';
   if (language === 'en' && poi?.titleEn) return poi.titleEn;
   return poi?.title ?? '';
 };
