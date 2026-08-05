@@ -4,6 +4,7 @@ import { initReactI18next } from 'react-i18next';
 import en from './locales/en.json';
 import ja from './locales/ja.json';
 import ko from './locales/ko.json';
+import zh from './locales/zh.json';
 
 /**
  * 지원 언어 단일 소스(코드 + 토글 표기 라벨). 새 언어(zh 등) 추가 시 이 배열에 한 항목만
@@ -14,6 +15,7 @@ export const LANGUAGES = [
   { code: 'ko', label: 'KO' },
   { code: 'en', label: 'EN' },
   { code: 'ja', label: 'JA' },
+  { code: 'zh', label: 'ZH' },
 ] as const;
 
 export type SupportedLanguage = (typeof LANGUAGES)[number]['code'];
@@ -32,6 +34,7 @@ if (!i18next.isInitialized) {
       ko: { translation: ko },
       en: { translation: en },
       ja: { translation: ja },
+      zh: { translation: zh },
     },
     lng: DEFAULT_LANGUAGE,
     fallbackLng: DEFAULT_LANGUAGE,

@@ -20,6 +20,15 @@ html[lang='ja'],
 html[lang='ja'] body {
   font-family: var(--font-noto-jp), 'Noto Sans JP', sans-serif !important;
 }
+/*
+ * 중국어(간체) 선택 시 본문 전체를 Noto Sans SC로 전환한다.
+ * Jua는 关/无/东/铜/龙 등 간체 글리프를 포함하지 않아 폴백 시 폰트가 섞이므로,
+ * zh에서는 통째로 간체 폰트로 렌더한다. (<html lang="zh">는 I18nProvider가 설정)
+ */
+html[lang='zh'],
+html[lang='zh'] body {
+  font-family: var(--font-noto-sc), 'Noto Sans SC', sans-serif !important;
+}
 body {
   min-width: 320px;
   color: #666666 !important;
