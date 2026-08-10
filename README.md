@@ -14,6 +14,7 @@
 - 위치 동의/거부 흐름과 서울 외 지역 예외 처리
 - 구 단위 필터링 + 지도 마커 인터랙션(클러스터링 포함)
 - 실시간/예보 날씨와 추천 장소·맛집의 결합
+- **한/영/일/중 4개 언어 다국어(i18n)** — UI 문구부터 서울 전역 POI 이름(공원·문화공간·두드림길)까지 번역, 언어별 지도·날씨·맛집 응답 ([다국어 섹션](#4-다국어-internationalization))
 - 반응형 웹으로 데스크톱/태블릿/모바일 대응(디바이스별 지도 렌더 최적화) + 동일 서비스를 RN 네이티브 앱으로 확장
 
 ### 🧭 아키텍처 다이어그램
@@ -150,6 +151,8 @@ docs/images/
   추천 경험에 시간성(현재/예보)을 결합해 "오늘 갈 만한 장소"라는 맥락 기반 추천을 강화.
 - **Tailwind CSS**  
   빠른 UI 실험과 컴포넌트 단위 스타일 캡슐화, 그리고 반응형 레이아웃(모바일 스크롤/푸터 래핑 등)을 위해 유틸리티 퍼스트 방식 채택.
+- **i18next + react-i18next**  
+  한/영/일/중 UI 문구 번역과 런타임 언어 전환을 위해 도입. 선택 언어는 `localStorage`에 persist하고 `<html lang>`에 반영해, CJK 본문 폰트(Noto Sans JP/SC)를 언어별로 전환.
 - **TypeScript + zod**  
   외부 API(OpenWeather/Google Places/Geocode) 응답을 타입과 런타임 스키마로 함께 검증해 안정성을 강화.
 - **Vitest + Testing Library**  
@@ -203,9 +206,35 @@ portfolio-next/
 
 ---
 
-## 4) 🔥 핵심 트러블슈팅 및 기술적 고민 (Troubleshooting)
+## 4) 🌐 다국어 (Internationalization)
 
-### 4-1) 지도 초기 렌더 시 회색 화면 + 구 변경 후에만 표시되는 문제
+이 서비스의 **핵심 차별점**입니다. UI 문구부터 서울 전역 POI 이름까지 **한국어·영어·일본어·중국어(간체) 4개 언어**를 지원합니다.
+
+### 설계 요약
+
+- **지원 언어 단일 소스** — `src/i18n/config.ts`의 `LANGUAGES` 배열 한 곳에 언어를 추가하면 지원 목록·타입·언어 토글이 자동 반영됩니다. UI 문구는 `src/i18n/locales/{ko,en,ja,zh}.json`(언어당 75개 키).
+- **값–라벨 분리(도메인 로직 무손상)** — POI·자치구 데이터는 **한국어를 정본 값으로 저장**하고 `_en/_ja/_zh` 필드를 병기합니다. 필터·비교 같은 로직은 한국어 정본을 그대로 사용하고, 표시 시점에만 `utils/label.ts`(`getPoiDisplayTitle`·`getDistrictLabel`·`getCategoryLabel`)가 현재 언어로 해석합니다(예: 일본어 = `titleJa ?? titleEn ?? 한국어`). 언어를 늘려도 지도·필터·상태 로직은 바뀌지 않습니다.
+- **BFF 언어 파라미터** — 클라이언트가 `/api/*`에 `lang`(ko/en/ja/zh)을 전달하면 서버가 외부 API 언어 코드로 매핑해 호출합니다.
+  - 날씨(OpenWeather): `ko→kr`, `en→en`, `ja→ja`, **`zh→zh_cn`**(언더스코어 예외)
+  - 맛집(Google Places): `ko/en/ja`는 그대로, **`zh→zh-CN`**(하이픈 — OpenWeather 표기와 다름)
+  - 지오코딩(주소): 항상 `ko`(주소는 한국어 정본)
+- **POI 번역 규모** — 공원 132 · 문화공간 1,033 · 두드림길(무장애 자락길) 1,443 = **언어당 2,608건**을 일본어·중국어까지 번역. RN 레포가 번역 자산의 단일 소스이고, 웹은 키로 값을 복사해 두 플랫폼이 동일한 번역을 공유합니다.
+- **CJK 표기 기준** — 한자권 지명 표기 원칙(일본어는 표음문자(가타카나)가 있어 **음차 우선**, 중국어는 표음문자가 없어 **의역 우선** 등 정반대 원칙)과 케이스 로그는 RN 레포 [`docs/i18n-cjk-naming.md`](https://github.com/byeonsejun/date-rn/blob/main/docs/i18n-cjk-naming.md)에 정리되어 있습니다.
+- **언어별 폰트** — `next/font/google`로 Jua(디스플레이) + **Noto Sans JP(일본어)·Noto Sans SC(중국어)**를 로드하고, `<html lang>` 값에 따라(`common.css`) 본문 폰트를 전환합니다. CJK 폰트는 용량이 커 `preload`를 끄고 지연 로드합니다.
+- **언어 선택 영속화** — `zustand` persist로 선택 언어를 `localStorage`에 저장하고, 마운트 시 rehydrate해 `<html lang>`에 반영합니다(`context/I18nProvider.tsx`).
+
+### 데이터 흐름 (언어)
+
+`언어 토글 선택`  
+→ `languageStore(persist) + i18next.changeLanguage`  
+→ `<html lang> 갱신(→ 본문 폰트 전환)`  
+→ `label 해석기가 POI/구/카테고리를 현재 언어로 표시` + `/api/* 호출에 lang 부착 → 날씨·맛집 응답 언어 전환`
+
+---
+
+## 5) 🔥 핵심 트러블슈팅 및 기술적 고민 (Troubleshooting)
+
+### 5-1) 지도 초기 렌더 시 회색 화면 + 구 변경 후에만 표시되는 문제
 
 **Situation**  
 초기 렌더에서 Google Map이 회색으로 남고, 구를 변경해야만 지도가 정상 표시되는 현상 발생.
@@ -227,7 +256,7 @@ onLoad={(map) => {
 }}
 ```
 
-### 4-2) 지도 이동 중 이전 위치로 튀는(되돌아가는) 카메라 점프
+### 5-2) 지도 이동 중 이전 위치로 튀는(되돌아가는) 카메라 점프
 
 **Situation**  
 드래그/마커 hover·click 시 지도 중심이 과거 위치로 되돌아가는 현상이 간헐적으로 발생.
@@ -245,7 +274,7 @@ const initialCenterRef = useRef(getCenterPosition() ?? DEFAULT_CENTER);
 <GoogleMap defaultCenter={initialCenterRef.current} ... />
 ```
 
-### 4-3) WebGL `CONTEXT_LOST`/`INVALID_OPERATION` 및 심한 프레임 드랍
+### 5-3) WebGL `CONTEXT_LOST`/`INVALID_OPERATION` 및 심한 프레임 드랍
 
 **Situation**  
 3D 지도(WebGL)에서 이동/확대 반복 시 `CONTEXT_LOST_WEBGL`과 버퍼 관련 에러가 발생, 체감 랙이 급증.
@@ -266,7 +295,7 @@ if (map.getTilt() !== nextTilt) map.setTilt(nextTilt);
 setMapTilt((prev) => (prev === nextTilt ? prev : nextTilt));
 ```
 
-### 4-4) 모바일/태블릿에서 "Vector Map 로드 실패 → Raster fallback" 콘솔 에러
+### 5-4) 모바일/태블릿에서 "Vector Map 로드 실패 → Raster fallback" 콘솔 에러
 
 **Situation**  
 모바일·태블릿에서 진입 시 `Attempted to load a Vector Map, but failed. Falling back to Raster` 경고가 콘솔에 지속 노출.
@@ -281,12 +310,15 @@ setMapTilt((prev) => (prev === nextTilt ? prev : nextTilt));
 
 ```jsx
 const mapOptions = useMemo(
-  () => ({ ...mapOptionsBase, mapId: isDesktop ? process.env.NEXT_PUBLIC_GOOGLE_MAPS_ID : undefined }),
-  [isDesktop],
+  () => ({
+    ...mapOptionsBase,
+    mapId: isDesktop ? process.env.NEXT_PUBLIC_GOOGLE_MAPS_ID : undefined,
+  }),
+  [isDesktop]
 );
 ```
 
-### 4-5) `/api/weather` 500 + 클라이언트 `Unexpected token '<'`
+### 5-5) `/api/weather` 500 + 클라이언트 `Unexpected token '<'`
 
 **Situation**  
 날씨 호출이 간헐적으로 500을 반환하고, 클라이언트에서 `Unexpected token '<'`(HTML 응답 파싱)으로 크래시.
@@ -300,7 +332,7 @@ Turbopack 개발 서버의 Route Handler 컴파일 이슈(`ComponentMod.handler 
 - `fetchJsonOrThrow`로 `res.ok`/`content-type`을 검증해 비-JSON 응답을 안전하게 에러로 변환
 - `useWeather`의 호출부를 `try/catch/finally`로 감싸 로딩 상태 누수 방지
 
-### 4-6) 통계 차트 "Maximum update depth exceeded" 무한 렌더 루프
+### 5-6) 통계 차트 "Maximum update depth exceeded" 무한 렌더 루프
 
 **Situation**  
 통계 화면 진입 시 `BarChart`에서 setState 무한 루프가 발생해 페이지가 멈춤.
@@ -315,7 +347,7 @@ Turbopack 개발 서버의 Route Handler 컴파일 이슈(`ComponentMod.handler 
 
 > 통계 페이지 자체는 데모성 데이터(허위정보 소지)라 판단해 라우트를 홈으로 `redirect` 처리했고, 위 수정은 차트 컴포넌트 회귀 방지를 위해 유지합니다.
 
-### 4-7) 모바일 반응형 레이아웃(스크롤/메뉴/푸터)
+### 5-7) 모바일 반응형 레이아웃(스크롤/메뉴/푸터)
 
 **Situation**  
 모바일에서 세로 스크롤이 막히고, 네비 메뉴가 화면 밖으로 튀어나오며, 370px 미만에서 푸터 문구가 깨짐.
@@ -329,7 +361,7 @@ Turbopack 개발 서버의 Route Handler 컴파일 이슈(`ComponentMod.handler 
 - 사용하지 않는 모바일 메뉴 UI 제거(`NavComponent`는 위치 초기화 로직만 유지)
 - 푸터는 `max-[370px]`에서 2줄로 래핑되도록 처리
 
-### 4-8) 접근성(키보드 내비게이션 / 스크린리더 / 모달 포커스)
+### 5-8) 접근성(키보드 내비게이션 / 스크린리더 / 모달 포커스)
 
 **Situation**  
 탭형 UI와 모달이 `<li onClick>`·장식성 마크업 위주로 구성되어, 키보드만 사용하는 사용자나 스크린리더 사용자가 날씨 기간 전환·추천 토글·지도 타입 필터·위치 동의 모달에 접근하기 어려웠음.
@@ -348,7 +380,7 @@ Turbopack 개발 서버의 Route Handler 컴파일 이슈(`ComponentMod.handler 
 
 ---
 
-## 5) 📊 측정 지표 (Measured Metrics)
+## 6) 📊 측정 지표 (Measured Metrics)
 
 측정 일시: **2026-06-01**  
 측정 기준: Lighthouse CLI (`https://date-eight-navy.vercel.app/`)
@@ -382,7 +414,7 @@ Turbopack 개발 서버의 Route Handler 컴파일 이슈(`ComponentMod.handler 
 
 ---
 
-## 6) 향후 계획 (Next Steps)
+## 7) 향후 계획 (Next Steps)
 
 - 현재 지도/날씨/추천 흐름을 기준으로, 성능 계측(long task, context loss rate) 자동화
 - `/api` 계층 고도화(응답 캐싱, 장애 fallback, rate limit 대응)로 운영 안정성 강화
@@ -390,15 +422,16 @@ Turbopack 개발 서버의 Route Handler 컴파일 이슈(`ComponentMod.handler 
 
 ---
 
-## 7) 🧩 크로스 플랫폼 확장 (Cross-Platform)
+## 8) 🧩 크로스 플랫폼 확장 (Cross-Platform)
 
 이 레포는 **반응형 웹(Next.js App Router)** 구현체이며, 동일 서비스를 **React Native 네이티브 앱으로 별도 레포에서 재구현**했습니다. 두 구현체는 소스를 공유하지 않습니다 — 다만 그 이유는 _언어가 달라서가 아닙니다_. **웹·RN 모두 TypeScript**이며, 갈라지는 지점은 **프레임워크·런타임·아키텍처**입니다(웹: Next.js App Router / RN: Expo + expo-router + FSD(Feature-Sliced Design)). 런타임과 UI 계층이 근본적으로 달라 화면 코드를 그대로 옮길 수는 없습니다.
 
-핵심은 같은 제품을 **두 번 만든** 것이 아니라, **재사용 가능한 경계(도메인 로직·상태 모델·BFF API 계약)를 UI에서 분리해 그어둔** 덕분에, RN에서는 그 경계를 그대로 따르고 **UI만 다시 구현**하면 됐다는 점입니다. 실제로 RN은 웹과 같은 `/api/*` BFF 계약을 프록시로 공유할 수 있습니다(아래 API 항목 참고).
+핵심은 같은 제품을 **두 번 만든** 것이 아니라, **재사용 가능한 경계(도메인 로직·상태 모델·BFF API 계약)를 UI에서 분리해 그어둔** 덕분에, RN에서는 그 경계를 그대로 따르고 **UI만 다시 구현**하면 됐다는 점입니다. 실제로 RN은 웹과 같은 `/api/*` BFF 계약을 프록시 전용으로 공유합니다(아래 API 항목 참고).
 
 - **상태** — 웹의 단일 `LocationStore`를 RN에서는 FSD 원칙에 따라 entity별 Zustand 스토어(location / weather / map / restaurant 등)로 분해.
 - **데이터** — 서울 자치구 정적 데이터·차트 데이터(`chartData.json` 등)는 웹 자산을 옮겨와 RN 타입으로 재가공.
-- **API** — RN은 기본적으로 외부 API(OpenWeather / Google)를 직접 호출하며, 환경변수(`EXPO_PUBLIC_API_BASE_URL`) 설정 시 웹 `/api/*` 프록시 경유(폴백)를 선택적으로 지원.
+- **번역 자산** — 서울 전역 POI 이름의 다국어 값(`_en/_ja/_zh`, 언어당 2,608건)은 **RN 레포를 단일 소스**로 두고 웹으로 복사해, 두 플랫폼이 동일한 번역을 공유(위 [다국어 섹션](#4-다국어-internationalization) 참고).
+- **API** — RN도 웹과 **동일한 `/api/*` BFF 계약을 프록시 전용으로 공유**한다. 모든 데이터 호출(날씨/위치/맛집)이 `EXPO_PUBLIC_API_BASE_URL`(웹 배포 도메인)의 `/api/*`로 향하며(미설정 시 명시적 에러), 외부 API 키는 앱 번들에 두지 않고 웹 서버에만 존재한다.
 
 ### 링크 / 배포
 
