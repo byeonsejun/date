@@ -409,7 +409,7 @@ Turbopack 개발 서버의 Route Handler 컴파일 이슈(`ComponentMod.handler 
 
 메타는 계속 한국어로 고정했고 언어별 주소(hreflang)는 만들지 않았습니다. 이 앱은 언어가 URL이 아니라 화면 안에서 바뀌어서, hreflang 을 하려면 라우팅부터 바꿔야 하기 때문입니다(ADR 0005, ADR 0006). 노출 대상은 `/` 하나이고 `/statistics` 는 홈으로 redirect 만 하는 페이지라 사이트맵에서 뺐습니다.
 
-확인한 것은 이렇습니다(2026-11-26). 로컬 빌드에서 `/robots.txt` · `/sitemap.xml` · `/llms.txt` · `/og.png` 가 200이고 `/statistics` 는 307로 홈에 갑니다. schema.org 검증기는 오류 0, 경고 0이었습니다(페이지 전체는 검증기 크기 제한을 넘어서 `<head>` 와 JSON-LD 만 잘라 넣었습니다). 로컬 Lighthouse SEO(13.4.1, 모바일)는 두 번 모두 100에 실패 감사 없음이었습니다. 미리보기 배포는 처음에 막히지 않았습니다. 이 Vercel 프로젝트에 `VERCEL_ENV` 라는 사용자 변수가 따로 있어 시스템 값을 가렸기 때문이고, 판정을 `VERCEL_TARGET_ENV` 로 바꿔 해결했습니다. 새 미리보기에서 robots.txt 는 `Disallow: /` 만 나오고, 홈 HTML 에 noindex 메타가 있고, canonical 은 운영 주소를 가리키는 것까지 확인했습니다. 구글 리치 결과 테스트는 자동으로 돌릴 수 없어 하지 않았습니다.
+확인한 것은 이렇습니다(2026-11-26). 로컬 빌드에서 `/robots.txt` · `/sitemap.xml` · `/llms.txt` · `/og.png` 가 200이고 `/statistics` 는 307로 홈에 갑니다. schema.org 검증기는 오류 0, 경고 0이었습니다(페이지 전체는 검증기 크기 제한을 넘어서 `<head>` 와 JSON-LD 만 잘라 넣었습니다). 로컬 Lighthouse SEO(13.4.1, 모바일)는 두 번 모두 100에 실패 감사 없음이었습니다. 미리보기 배포는 처음에 막히지 않았습니다. 이 Vercel 프로젝트에 `VERCEL_ENV` 라는 사용자 변수가 따로 있어 시스템 값을 가렸기 때문이고, 판정을 `VERCEL_TARGET_ENV` 로 바꿔 해결했습니다. 그 사용자 변수는 코드 어디에서도 읽지 않는 것을 확인하고 지웠습니다. 새 미리보기에서 robots.txt 는 `Disallow: /` 만 나오고, 홈 HTML 에 noindex 메타가 있고, canonical 은 운영 주소를 가리키는 것까지 확인했습니다. 구글 리치 결과 테스트는 자동으로 돌릴 수 없어 하지 않았습니다.
 
 ---
 
