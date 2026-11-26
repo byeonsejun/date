@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, MetadataRoute } from 'next';
 
 /** 정본 주소. 미리보기 배포에서도 canonical 은 항상 운영을 가리킨다. */
 export const SITE_URL = 'https://date-eight-navy.vercel.app';
@@ -56,4 +56,62 @@ export function buildRootMetadata(preview: boolean): Metadata {
       images: [OG_IMAGE],
     },
   };
+}
+
+export function buildRobots(preview: boolean): MetadataRoute.Robots {
+  if (preview) {
+    return { rules: [{ userAgent: '*', disallow: '/' }] };
+  }
+  return {
+    rules: [{ userAgent: '*', allow: '/', disallow: ['/api/'] }],
+    sitemap: `${SITE_URL}/sitemap.xml`,
+  };
+}
+
+/** /statistics 는 홈으로 redirect 하는 페이지라 넣지 않는다. */
+export function buildSitemap(): MetadataRoute.Sitemap {
+  return [{ url: `${SITE_URL}/` }];
+}
+
+export function buildWebApplicationJsonLd(): Record<string, unknown> {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: SITE_NAME,
+    url: `${SITE_URL}/`,
+    description: SITE_DESCRIPTION,
+    inLanguage: [...SUPPORTED_LANGUAGES_LD],
+    applicationCategory: 'TravelApplication',
+    operatingSystem: 'Web',
+  };
+}
+
+export function buildLlmsTxt(): string {
+  return `# ${SITE_NAME}
+
+> 서울의 자치구를 고르거나 현재 위치를 쓰면, 그곳의 날씨와 데이트 장소(공원 · 문화공간 · 두드림길), 추천 식당을 지도 한 화면에서 보여 주는 웹 앱입니다. 서울 지역만 지원합니다.
+
+## 페이지
+
+- [홈](${SITE_URL}/)
+
+## 언어
+
+한국어 · 영어 · 일본어 · 중국어(간체). 화면 안 토글로 바뀌고 주소는 하나입니다.
+
+## 데이터
+
+- 날씨: OpenWeather
+- 식당 · 지도: Google Maps · Places
+- 장소 목록: 저장소 \`data/\` 의 JSON
+
+## 만든 사람
+
+- 변세준 · https://sejunb.com
+- 저장소: https://github.com/byeonsejun/date
+
+## 기술
+
+Next.js App Router, React, Zustand, SWR, react-i18next, Google Maps.
+`;
 }

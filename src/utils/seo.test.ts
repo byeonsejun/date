@@ -4,7 +4,11 @@ import { SUPPORTED_LANGUAGES } from '@/i18n/config';
 import ko from '@/i18n/locales/ko.json';
 
 import {
+  buildLlmsTxt,
+  buildRobots,
   buildRootMetadata,
+  buildSitemap,
+  buildWebApplicationJsonLd,
   isPreviewDeployment,
   OG_IMAGE,
   SITE_DESCRIPTION,
@@ -88,5 +92,72 @@ describe('SITE_DESCRIPTION', () => {
 describe('SUPPORTED_LANGUAGES_LD', () => {
   it('i18n 설정의 지원 언어와 같다', () => {
     expect([...SUPPORTED_LANGUAGES_LD]).toEqual([...SUPPORTED_LANGUAGES]);
+  });
+});
+
+describe('buildRobots', () => {
+  it('운영은 /api/ 만 막고 사이트맵을 알린다', () => {
+    expect(buildRobots(false)).toEqual({
+      rules: [{ userAgent: '*', allow: '/', disallow: ['/api/'] }],
+      sitemap: 'https://date-eight-navy.vercel.app/sitemap.xml',
+    });
+  });
+
+  it('미리보기는 전체를 막고 사이트맵을 알리지 않는다', () => {
+    const robots = buildRobots(true);
+
+    expect(robots).toEqual({ rules: [{ userAgent: '*', disallow: '/' }] });
+    expect(robots).not.toHaveProperty('sitemap');
+  });
+});
+
+describe('buildSitemap', () => {
+  it('홈 주소 하나만 담는다 (/statistics 는 redirect 페이지)', () => {
+    const sitemap = buildSitemap();
+
+    expect(sitemap).toEqual([{ url: 'https://date-eight-navy.vercel.app/' }]);
+    expect(JSON.stringify(sitemap)).not.toContain('statistics');
+    expect(JSON.stringify(sitemap)).not.toContain('/api');
+  });
+});
+
+describe('buildWebApplicationJsonLd', () => {
+  it('화면에 보이는 값으로 WebApplication 을 만든다', () => {
+    expect(buildWebApplicationJsonLd()).toEqual({
+      '@context': 'https://schema.org',
+      '@type': 'WebApplication',
+      name: '서울, 너와 함께',
+      url: 'https://date-eight-navy.vercel.app/',
+      description: SITE_DESCRIPTION,
+      inLanguage: ['ko', 'en', 'ja', 'zh'],
+      applicationCategory: 'TravelApplication',
+      operatingSystem: 'Web',
+    });
+  });
+
+  it('inLanguage 는 i18n 설정의 지원 언어와 같다', () => {
+    expect(buildWebApplicationJsonLd().inLanguage).toEqual([...SUPPORTED_LANGUAGES]);
+  });
+});
+
+describe('buildLlmsTxt', () => {
+  const txt = buildLlmsTxt();
+
+  it('제목과 요약 줄로 시작한다', () => {
+    expect(txt.startsWith('# 서울, 너와 함께\n')).toBe(true);
+    expect(txt).toMatch(/^> .+/m);
+  });
+
+  it('페이지 · 언어 · 데이터 · 만든 사람 정보를 담는다', () => {
+    expect(txt).toContain('- [홈](https://date-eight-navy.vercel.app/)');
+    expect(txt).toContain('한국어 · 영어 · 일본어 · 중국어(간체)');
+    expect(txt).toContain('OpenWeather');
+    expect(txt).toContain('Google');
+    expect(txt).toContain('https://sejunb.com');
+    expect(txt).toContain('https://github.com/byeonsejun/date');
+  });
+
+  it('공개 페이지가 아닌 /statistics 는 적지 않는다', () => {
+    expect(txt).not.toContain('statistics');
   });
 });
