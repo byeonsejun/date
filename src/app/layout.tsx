@@ -7,6 +7,7 @@ import SWRConfigContext from '@/context/SWRConfigContext';
 import I18nProvider from '@/context/I18nProvider';
 import LocationConsentModal from '@/components/LocationConsentModal';
 import SeoulOnlyToast from '@/components/SeoulOnlyToast';
+import { buildRootMetadata, isPreviewDeployment } from '@/utils/seo';
 
 const juaFont = Jua({
   weight: '400',
@@ -42,13 +43,7 @@ const notoSansSc = Noto_Sans_SC({
   preload: false,
 });
 
-export const metadata = {
-  title: {
-    default: '서울, 너와 함께',
-    template: '서울에서 즐기는 데이트의 모든 것 | %s',
-  },
-  description: '서울에서 즐기는 데이트, 식사 그 모든 계획을 한 번에!',
-};
+export const metadata = buildRootMetadata(isPreviewDeployment());
 
 export default function RootLayout({ children }) {
   return (

@@ -403,6 +403,14 @@ Turbopack 개발 서버의 Route Handler 컴파일 이슈(`ComponentMod.handler 
 
 > Long task / context loss rate 자동 계측은 후속 계획으로 유지하고 있습니다.
 
+### 검색 노출
+
+운영 SEO 점수는 이 작업 전에도 이미 100이었습니다(2026-11-26, Lighthouse 13.4.1, 모바일). 그래서 점수를 올린 게 아니라 점수가 보지 않는 빈틈을 채웠습니다. `/robots.txt` 와 `/sitemap.xml` 은 404였고, 공유 카드와 구조화 데이터가 없었고, 메타 설명은 화면 어디에도 없는 문장이었습니다. 지금은 robots · 사이트맵 · `llms.txt` · canonical · 공유 카드 · WebApplication JSON-LD 가 있고, 메타 설명은 화면에 실제로 나오는 한국어 문구를 이어 붙여(문구 사이를 잇는 말만 더해) 만들었고, 구조화 데이터의 언어 값은 화면의 언어 토글과 같습니다. 공유 이미지는 예전 README 첫 그림의 푸터가 2024년 표기라서 쓰지 않고, 현재 운영 화면을 다시 찍었습니다.
+
+메타는 계속 한국어로 고정했고 언어별 주소(hreflang)는 만들지 않았습니다. 이 앱은 언어가 URL이 아니라 화면 안에서 바뀌어서, hreflang 을 하려면 라우팅부터 바꿔야 하기 때문입니다(ADR 0005, ADR 0006). 노출 대상은 `/` 하나이고 `/statistics` 는 홈으로 redirect 만 하는 페이지라 사이트맵에서 뺐습니다.
+
+확인한 것은 이렇습니다(2026-11-26). 로컬 빌드에서 `/robots.txt` · `/sitemap.xml` · `/llms.txt` · `/og.png` 가 200이고 `/statistics` 는 307로 홈에 갑니다. schema.org 검증기는 오류 0, 경고 0이었습니다(페이지 전체는 검증기 크기 제한을 넘어서 `<head>` 와 JSON-LD 만 잘라 넣었습니다). 로컬 Lighthouse SEO(13.4.1, 모바일)는 두 번 모두 100에 실패 감사 없음이었습니다. 미리보기 배포는 처음에 막히지 않았습니다. 이 Vercel 프로젝트에 `VERCEL_ENV` 라는 사용자 변수가 따로 있어 시스템 값을 가렸기 때문이고, 판정을 `VERCEL_TARGET_ENV` 로 바꿔 해결했습니다. 새 미리보기에서 robots.txt 는 `Disallow: /` 만 나오고, 홈 HTML 에 noindex 메타가 있고, canonical 은 운영 주소를 가리키는 것까지 확인했습니다. 구글 리치 결과 테스트는 자동으로 돌릴 수 없어 하지 않았습니다.
+
 ---
 
 ## ADR Index
@@ -411,6 +419,8 @@ Turbopack 개발 서버의 Route Handler 컴파일 이슈(`ComponentMod.handler 
 - [ADR 0002: Why App Router Over Pages Router](docs/adr/0002-why-app-router-over-pages.md)
 - [ADR 0003: BFF Pattern for API Keys](docs/adr/0003-bff-pattern-for-api-keys.md)
 - [ADR 0004: Why Marker Clustering Was Added Later](docs/adr/0004-why-no-clustering-initially-then-added.md)
+- [ADR 0005: Client-Side i18n — Korean Default and Korean-Only Metadata](docs/adr/0005-client-side-i18n-metadata-stays-korean.md)
+- [ADR 0006: Search Exposure With Korean-Only Metadata](docs/adr/0006-search-exposure-with-korean-metadata.md)
 
 ---
 
