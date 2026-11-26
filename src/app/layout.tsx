@@ -43,7 +43,7 @@ const notoSansSc = Noto_Sans_SC({
   preload: false,
 });
 
-export const metadata = buildRootMetadata(isPreviewDeployment(process.env.VERCEL_ENV));
+export const metadata = buildRootMetadata(isPreviewDeployment());
 
 export default function RootLayout({ children }) {
   return (

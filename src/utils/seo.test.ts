@@ -18,11 +18,29 @@ import {
 } from './seo';
 
 describe('isPreviewDeployment', () => {
-  it('VERCEL_ENV 가 preview 일 때만 true', () => {
-    expect(isPreviewDeployment('preview')).toBe(true);
-    expect(isPreviewDeployment('production')).toBe(false);
-    expect(isPreviewDeployment('development')).toBe(false);
-    expect(isPreviewDeployment(undefined)).toBe(false);
+  it('VERCEL_TARGET_ENV 가 preview 일 때만 true', () => {
+    expect(isPreviewDeployment({ VERCEL_TARGET_ENV: 'preview' })).toBe(true);
+  });
+
+  it('사용자 변수 VERCEL_ENV 가 시스템 값을 가려도 TARGET_ENV 로 판정한다', () => {
+    expect(isPreviewDeployment({ VERCEL_ENV: 'production', VERCEL_TARGET_ENV: 'preview' })).toBe(
+      true
+    );
+  });
+
+  it('VERCEL_ENV 만 preview 인 경우는 false', () => {
+    expect(isPreviewDeployment({ VERCEL_ENV: 'preview' })).toBe(false);
+  });
+
+  it.each(['production', 'development', '', 'staging'])(
+    'VERCEL_TARGET_ENV 가 %j 이면 false',
+    (value) => {
+      expect(isPreviewDeployment({ VERCEL_TARGET_ENV: value })).toBe(false);
+    }
+  );
+
+  it('값이 없으면 false', () => {
+    expect(isPreviewDeployment({})).toBe(false);
   });
 });
 
@@ -72,12 +90,12 @@ describe('SITE_DESCRIPTION', () => {
   it('화면에 보이는 ko.json 문구로만 만들어졌다', () => {
     const screenTexts = [
       ko.location.consentMessage,
-      ko.recommend.todayPlacesTitle,
+      ko.recommend.recommendDesc,
       ko.recommend.foodListTitle,
     ].join('\n');
     const phrases = [
       '현재 계신 곳을 중심으로 맞춤형 날씨와 데이트 장소를 추천해 드려요',
-      '오늘 추천 데이트 장소',
+      '오늘 추천하는 데이트 장소',
       '추천식당 리스트 Top 5',
       '서울 지역 한정으로 제공됩니다',
     ];

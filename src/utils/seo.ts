@@ -6,11 +6,11 @@ export const SITE_URL = 'https://date-eight-navy.vercel.app';
 export const SITE_NAME = '서울, 너와 함께';
 
 /**
- * 화면에 보이는 한국어 문구(ko.json 의 위치 동의 안내 · 추천 제목)로만 만든 설명.
+ * 화면에 보이는 한국어 문구(ko.json 의 위치 동의 안내 · 추천 안내 · 식당 목록 제목)로만 만든 설명.
  * 언어는 URL 이 아니라 화면 안에서 바뀌므로(ADR 0005) 메타는 한국어로 고정한다.
  */
 export const SITE_DESCRIPTION =
-  '현재 계신 곳을 중심으로 맞춤형 날씨와 데이트 장소를 추천해 드려요. 오늘 추천 데이트 장소와 추천식당 리스트 Top 5를 지도에서 함께 봅니다. 서울 지역 한정으로 제공됩니다.';
+  '현재 계신 곳을 중심으로 맞춤형 날씨와 데이트 장소를 추천해 드려요. 오늘 추천하는 데이트 장소와 추천식당 리스트 Top 5를 지도에서 함께 봅니다. 서울 지역 한정으로 제공됩니다.';
 
 export const OG_IMAGE = {
   url: '/og.png',
@@ -25,9 +25,9 @@ export const OG_IMAGE = {
  */
 export const SUPPORTED_LANGUAGES_LD = ['ko', 'en', 'ja', 'zh'] as const;
 
-/** Vercel 미리보기 배포(VERCEL_ENV === 'preview')만 true. 로컬 · 운영은 색인 대상. */
-export function isPreviewDeployment(vercelEnv: string | undefined): boolean {
-  return vercelEnv === 'preview';
+/** 프로젝트에 사용자 변수 VERCEL_ENV 가 있어 시스템 값을 가리므로 VERCEL_TARGET_ENV 로 판정한다. */
+export function isPreviewDeployment(env: { VERCEL_TARGET_ENV?: string } = process.env): boolean {
+  return env.VERCEL_TARGET_ENV === 'preview';
 }
 
 export function buildRootMetadata(preview: boolean): Metadata {
