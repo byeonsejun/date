@@ -1,0 +1,92 @@
+import { describe, expect, it } from 'vitest';
+
+import { SUPPORTED_LANGUAGES } from '@/i18n/config';
+import ko from '@/i18n/locales/ko.json';
+
+import {
+  buildRootMetadata,
+  isPreviewDeployment,
+  OG_IMAGE,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  SITE_URL,
+  SUPPORTED_LANGUAGES_LD,
+} from './seo';
+
+describe('isPreviewDeployment', () => {
+  it('VERCEL_ENV 가 preview 일 때만 true', () => {
+    expect(isPreviewDeployment('preview')).toBe(true);
+    expect(isPreviewDeployment('production')).toBe(false);
+    expect(isPreviewDeployment('development')).toBe(false);
+    expect(isPreviewDeployment(undefined)).toBe(false);
+  });
+});
+
+describe('buildRootMetadata', () => {
+  it('운영 주소를 기준으로 한국어 메타를 만든다', () => {
+    const meta = buildRootMetadata(false);
+
+    expect(String(meta.metadataBase)).toBe('https://date-eight-navy.vercel.app/');
+    expect(SITE_URL).toBe('https://date-eight-navy.vercel.app');
+    expect(meta.title).toEqual({
+      default: '서울, 너와 함께',
+      template: '서울에서 즐기는 데이트의 모든 것 | %s',
+    });
+    expect(meta.description).toBe(SITE_DESCRIPTION);
+    expect(meta.alternates?.canonical).toBe('/');
+    expect(meta.robots).toBeUndefined();
+    expect(meta.openGraph).toEqual({
+      title: SITE_NAME,
+      description: SITE_DESCRIPTION,
+      url: '/',
+      siteName: SITE_NAME,
+      locale: 'ko_KR',
+      type: 'website',
+      images: [OG_IMAGE],
+    });
+    expect(meta.twitter).toEqual({
+      card: 'summary_large_image',
+      title: SITE_NAME,
+      description: SITE_DESCRIPTION,
+      images: [OG_IMAGE],
+    });
+  });
+
+  it('미리보기 배포는 색인하지 않는다', () => {
+    expect(buildRootMetadata(true).robots).toEqual({ index: false, follow: false });
+  });
+
+  it('미리보기에서도 canonical 은 운영을 가리킨다', () => {
+    expect(buildRootMetadata(true).alternates?.canonical).toBe('/');
+    expect(String(buildRootMetadata(true).metadataBase)).toBe(
+      'https://date-eight-navy.vercel.app/'
+    );
+  });
+});
+
+describe('SITE_DESCRIPTION', () => {
+  it('화면에 보이는 ko.json 문구로만 만들어졌다', () => {
+    const screenTexts = [
+      ko.location.consentMessage,
+      ko.recommend.todayPlacesTitle,
+      ko.recommend.foodListTitle,
+    ].join('\n');
+    const phrases = [
+      '현재 계신 곳을 중심으로 맞춤형 날씨와 데이트 장소를 추천해 드려요',
+      '오늘 추천 데이트 장소',
+      '추천식당 리스트 Top 5',
+      '서울 지역 한정으로 제공됩니다',
+    ];
+
+    for (const phrase of phrases) {
+      expect(screenTexts).toContain(phrase);
+      expect(SITE_DESCRIPTION).toContain(phrase);
+    }
+  });
+});
+
+describe('SUPPORTED_LANGUAGES_LD', () => {
+  it('i18n 설정의 지원 언어와 같다', () => {
+    expect([...SUPPORTED_LANGUAGES_LD]).toEqual([...SUPPORTED_LANGUAGES]);
+  });
+});
