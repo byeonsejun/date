@@ -23,7 +23,7 @@ ADR 0005 의 "SEO를 목표로 하지 않는다"는 전제만 바꾸고, 결정 
 - 메타 · 구조화 데이터는 한국어로 고정합니다. 언어별 URL을 만들지 않고 hreflang 도 쓰지 않습니다.
 - 노출 대상은 `/` 하나입니다. `/statistics` 는 redirect 라 사이트맵에 넣지 않습니다.
 - 정본 주소는 상수 `SITE_URL` 하나이고, 미리보기 배포에서도 canonical 은 운영을 가리킵니다.
-- 미리보기 배포는 통째로 막습니다(`robots: { index: false, follow: false }` 와 robots.txt `Disallow: /`). 판정은 `VERCEL_TARGET_ENV === 'preview'` 입니다. 이 Vercel 프로젝트에는 오래전에 등록된 사용자 변수 `VERCEL_ENV` 가 모든 환경에 걸려 있어 시스템 값을 가립니다. 첫 미리보기에서 `VERCEL_ENV` 로 판정했더니 `Disallow: /api/` 만 나오고 noindex 도 붙지 않았습니다. `VERCEL_ENV` 와 OR 로 묶으면 운영을 noindex 할 위험이 생기고, 브랜치명으로 대신하면 로컬 빌드에서 값이 없어 오판할 수 있어 `VERCEL_TARGET_ENV` 하나만 봅니다.
+- 미리보기 배포는 통째로 막습니다(`robots: { index: false, follow: false }` 와 robots.txt `Disallow: /`). 판정은 `VERCEL_TARGET_ENV === 'preview'` 입니다. 이 Vercel 프로젝트에는 오래전에 등록된 사용자 변수 `VERCEL_ENV` 가 모든 환경에 걸려 있어 시스템 값을 가리고 있었습니다(코드 어디에서도 읽지 않는 변수라 2026-11-26 에 지웠습니다. 같은 때 쓰이지 않던 `NEXT_PUBLIC_ENV` 도 지웠습니다). 첫 미리보기에서 `VERCEL_ENV` 로 판정했더니 `Disallow: /api/` 만 나오고 noindex 도 붙지 않았습니다. `VERCEL_ENV` 와 OR 로 묶으면 운영을 noindex 할 위험이 생기고, 브랜치명으로 대신하면 로컬 빌드에서 값이 없어 오판할 수 있어 `VERCEL_TARGET_ENV` 하나만 봅니다.
 - 운영 robots.txt 는 `/api/` 만 막습니다. AI 검색 로봇은 따로 막지 않고, 같은 내용을 `llms.txt` 로도 둡니다.
 - 구조화 데이터(WebApplication JSON-LD)와 메타 설명은 화면에 있는 문구와, 화면의 언어 토글에 있는 값(`ko`, `en`, `ja`, `zh`)으로 만듭니다.
 - JSON-LD 는 서버 컴포넌트가 HTML 에 직접 넣습니다. 새 클라이언트 JS 는 없습니다.
