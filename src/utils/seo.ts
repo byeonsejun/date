@@ -26,7 +26,9 @@ export const OG_IMAGE = {
 export const SUPPORTED_LANGUAGES_LD = ['ko', 'en', 'ja', 'zh'] as const;
 
 /** 프로젝트에 사용자 변수 VERCEL_ENV 가 있어 시스템 값을 가리므로 VERCEL_TARGET_ENV 로 판정한다. */
-export function isPreviewDeployment(env: { VERCEL_TARGET_ENV?: string } = process.env): boolean {
+export function isPreviewDeployment(
+  env: Record<string, string | undefined> = process.env
+): boolean {
   return env.VERCEL_TARGET_ENV === 'preview';
 }
 
